@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Data Log Viewer</string>
     <string name="hello_DataLogViewer">Hello Data Log Viewer</string>
+    <string name="menu_ScanQRCode">Scan QR code</string>
+    <string name="menu_ScanQRCodeSelected">Scan QR code Selected</string>
 </resources>
