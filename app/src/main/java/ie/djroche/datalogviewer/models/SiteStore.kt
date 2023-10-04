@@ -1,7 +1,8 @@
 package ie.djroche.datalogviewer.models
 
 interface SiteStore {
-    fun update(placemark: SiteModel)
+    fun update(site: SiteModel)
     fun findAll(): List<SiteModel>
-    fun create(placemark: SiteModel)
+    fun create(site: SiteModel):Long
+    fun addkpi(siteID:Long,kpiData:SiteDataModel)
 }
