@@ -16,6 +16,10 @@ class SiteMemStore : SiteStore {
         return sites
     }
 
+    override fun find(siteID: Long): SiteModel? {
+        var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
+        return foundSite
+    }
     override fun create(site: SiteModel): Long {
         site.id = getId()
         sites.add(site)
@@ -28,7 +32,14 @@ class SiteMemStore : SiteStore {
             foundSite.data.add(kpiData.copy())
         }
     }
-
+    override fun getkpi(siteID: Long): ArrayList<SiteDataModel>? {
+        var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
+        if (foundSite != null) {
+           return foundSite.data
+        }else {
+            return null
+        }
+    }
     override fun update(site: SiteModel) {
         var foundSite: SiteModel? = sites.find { p -> p.id == site.id }
         if (foundSite != null) {
