@@ -1,5 +1,4 @@
 package ie.djroche.datalogviewer.activites
-//ToDo: Add GridActivity
 
 //ToDo:Add QRScanActivity
 
@@ -47,18 +46,16 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_ScanQR -> {
-
-                Timber.i("DataLogViewer Scan QR selected")
-                //toDo: adQR fetching here
-
-                //launch the KPI page
-                val launcherIntent = Intent(this, KpiListActivity::class.java)
-                getResult.launch(launcherIntent)
-
+                showScanQR()
+            }
+            R.id.item_Grid ->{
+                showGrid()
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 
     // -----------------------------------------------------------------------------------------------------
     private val getResult =
@@ -70,6 +67,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    // -----------------------------------------------------------------------------------------------------
+    private val getResultQRScan =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Timber.i("QR Scan Returned OK")
+                if  (app.qrCode != "-"){
+                    showGrid()
+                }
+            }
+        }
+    private fun showGrid() {
+        Timber.i("Show grid selected")
+        //launch the KPI page
+        val launcherIntent = Intent(this, KpiListActivity::class.java)
+        getResult.launch(launcherIntent)
+    }
+    // -----------------------------------------------------------------------------------------------------
+    private fun showScanQR() {
+        Timber.i("DataLogViewer Scan QR selected")
+        app.qrCode = "-"
+        //launch the KPI page
+        val launcherIntent = Intent(this, QRScanActivity::class.java)
+        getResultQRScan.launch(launcherIntent)
+        //ToDo: Validate the QR Code
+    }
 }
 
 

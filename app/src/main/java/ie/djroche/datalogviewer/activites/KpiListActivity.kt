@@ -10,7 +10,7 @@ import android.widget.Toast
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
-import ie.djroche.datalogviewer.databinding.ActivityMainBinding
+
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteDataModel
 import ie.djroche.datalogviewer.models.SiteModel
@@ -47,11 +47,22 @@ class KpiListActivity : AppCompatActivity() {
         // initialize our kpi adapter
         // and passing kpi list and context.
 
-        // load with dummy data
-        kpiList = app.sites.find(dummyQRId)!!.data
-        val kpiAdapter = GridRVAdapter(kpiList = kpiList , this@KpiListActivity)
+        // load with QR code Data
+        //Todo: fix error here
+        val lQRcode :Long = app.qrCode.toLong() //dummyQRId
+        try {
+            // some code
+            kpiList = app.sites.find(lQRcode)!!.data
+            val kpiAdapter = GridRVAdapter(kpiList = kpiList , this@KpiListActivity)
+            kpiGRV.adapter = kpiAdapter
+        } catch (e: Exception) {
+            Timber.i("KPI List Activity ERROR" + e.message)
+        }
 
-        kpiGRV.adapter = kpiAdapter
+
+
+        // load the site Description
+        binding.tvDescription.text = app.sites.find(lQRcode)!!.description
 
         //  adding on item
         // click listener for our grid view.

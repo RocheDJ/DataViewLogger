@@ -2,6 +2,9 @@
     <string name="app_name">Data Log Viewer</string>
     <string name="hello_DataLogViewer">Hello Data Log Viewer</string>
     <string name="menu_ScanQRCode">Scan QR code</string>
+    <string name="menu_DataSet">View KPI</string>
     <string name="menu_Back">Back to Main Menu</string>
     <string name="menu_ScanQRCodeSelected">Scan QR code Selected</string>
+    <string name="Permission_Denied">Permission Denied</string>
+    <string name="menu_Menu">Menu</string>
 </resources>

@@ -7,6 +7,7 @@ import timber.log.Timber.Forest.i
 class MainApp : Application()  {
 
     val sites = SiteMemStore()
+    var qrCode : String = ""
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())

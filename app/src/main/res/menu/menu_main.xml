@@ -2,6 +2,21 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/item_Menu"
+        android:title="@string/menu_Menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/menu_24"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/item_Grid"
+        android:icon="@drawable/dataset_24"
+        android:title="@string/menu_DataSet"
+        app:showAsAction="always" />
+
+
+    <item
         android:id="@+id/item_ScanQR"
         android:icon="@drawable/ic_menu_qr"
         android:title="@string/menu_ScanQRCode"

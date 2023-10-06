@@ -2,7 +2,7 @@ package ie.djroche.datalogviewer.models
 
 import timber.log.Timber
 
-var lastId = 0L
+var lastId = 12345678L
 
 internal fun getId(): Long {
     return lastId++

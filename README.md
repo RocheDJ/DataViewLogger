@@ -31,3 +31,10 @@ On a walk around an operator logged into the app can scan a QR code attached to 
 The key metrics from the instruments associated with that piece of equipment would then be shown on the app.  
 
 ---
+## References
+
+IOT downloaded from [Flat-icon](<a href="https://www.flaticon.com/free-icons/iot" title="iot icons">Iot icons created by Freepik - Flaticon</a>)
+
+Android Menu Icons From[Google](https://fonts.google.com/icons)
+
+Scanning a QR code in Kotlin [medium](https://harshitabambure.medium.com/barcode-scanner-and-qr-code-scanner-android-kotlin-b911b1299f65)
