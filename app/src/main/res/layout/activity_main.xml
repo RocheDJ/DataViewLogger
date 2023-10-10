@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activites.MainActivity">
+    tools:context=".activites.MainActivity"
+    android:background="@drawable/background_1">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -20,14 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:titleTextColor="@color/colorPrimary" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="443dp"
-            android:background="@color/white"
-            android:scaleType="fitXY"
-            android:src="@drawable/industry40" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
