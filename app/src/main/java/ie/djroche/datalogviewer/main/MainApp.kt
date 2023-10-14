@@ -13,5 +13,4 @@ class MainApp : Application()  {
         Timber.plant(Timber.DebugTree())
         i("DataLogViewer started")
     }
-
 }

@@ -4,6 +4,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SiteModel(
             var id : Long =0,
+            var qrcode : String = "",
             var description : String ="",
             var updated : Int = 0,
             var modelVersion : Int = 1,

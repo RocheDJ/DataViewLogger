@@ -49,21 +49,20 @@ class KpiListActivity : AppCompatActivity() {
 
         // load with QR code Data
         //Todo: fix error here
-        val lQRcode :Long = app.qrCode.toLong() //dummyQRId
+       // val lQRcode :Long = app.qrCode.toLong() //dummyQRId
+        val strQRCode : String = app.qrCode
         try {
             // some code
-            kpiList = app.sites.find(lQRcode)!!.data
+            kpiList = app.sites.findByQR(strQRCode)!!.data
             val kpiAdapter = GridRVAdapter(kpiList = kpiList , this@KpiListActivity)
             kpiGRV.adapter = kpiAdapter
         } catch (e: Exception) {
             Timber.i("KPI List Activity ERROR" + e.message)
         }
 
-
-
         // load the site Description
-        binding.tvDescription.text = app.sites.find(lQRcode)!!.description
-
+       // binding.tvDescription.text = app.sites.find(lQRcode)!!.description
+        binding.tvDescription.text = app.sites.findByQR(strQRCode)!!.description
         //  adding on item
         // click listener for our grid view.
         kpiGRV.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -101,7 +100,7 @@ class KpiListActivity : AppCompatActivity() {
         var mySiteData = ArrayList<SiteDataModel>()
         var mySite = SiteModel(data = mySiteData)
         var myKPI : SiteDataModel
-        mySite.description = "My Test Site"
+        mySite.description = "My Test Site 001"
         mySite.id = app.sites.create(mySite)
         dummyQRId =  mySite.id
         myKPI = SiteDataModel(1,"Temperature",R.drawable.temp,23.4,"Deg C")
@@ -114,5 +113,18 @@ class KpiListActivity : AppCompatActivity() {
         app.sites.addkpi(mySite.id,myKPI)
         myKPI = SiteDataModel(1,"Tank Level",R.drawable.tank,65.0,"%")
         app.sites.addkpi(mySite.id,myKPI)
+
+        var mySiteData_1 = ArrayList<SiteDataModel>()
+        var mySite_1 = SiteModel(data = mySiteData_1)
+        var myKPI_1 : SiteDataModel
+        mySite_1.description = "My Test Site 002"
+        mySite_1.id = app.sites.create(mySite_1)
+        dummyQRId =  mySite_1.id
+        myKPI_1 = SiteDataModel(1,"Valve Status",R.drawable.valve,0.0,"OFF")
+        app.sites.addkpi(mySite_1.id,myKPI_1)
+        myKPI_1 = SiteDataModel(1,"Flow Rate",R.drawable.flow,125.0,"L/m")
+        app.sites.addkpi(mySite_1.id,myKPI_1)
+        myKPI_1 = SiteDataModel(1,"Tank Level",R.drawable.tank,65.0,"%")
+        app.sites.addkpi(mySite_1.id,myKPI_1)
     }
 }

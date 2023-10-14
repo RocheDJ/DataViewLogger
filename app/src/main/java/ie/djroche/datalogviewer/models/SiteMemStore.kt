@@ -2,7 +2,7 @@ package ie.djroche.datalogviewer.models
 
 import timber.log.Timber
 
-var lastId = 12345678L
+var lastId = 1L
 
 internal fun getId(): Long {
     return lastId++
@@ -20,8 +20,16 @@ class SiteMemStore : SiteStore {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         return foundSite
     }
+
+    override fun findByQR(QRcode: String): SiteModel? {
+        var foundSite: SiteModel? = sites.find { p -> p.qrcode == QRcode }
+        return foundSite
+    }
+
+
     override fun create(site: SiteModel): Long {
         site.id = getId()
+        site.qrcode = "QR-000006-00000"+site.id.toString()
         sites.add(site)
         return site.id
     }
