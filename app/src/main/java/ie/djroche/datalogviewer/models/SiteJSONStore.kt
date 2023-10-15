@@ -1,17 +1,39 @@
 package ie.djroche.datalogviewer.models
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import timber.log.Timber
+import java.lang.reflect.Type
+import java.util.Random
+import ie.djroche.datalogviewer.helpers.*
+import android.content.Context
 
+const val JSON_FILE = "sites.json"
 
+val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
+    .create()
 
-class SiteMemStore : SiteStore {
+val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
+
+fun generateRandomId(): Long {
+    return Random().nextLong()
+}
+
+class SiteJSONStore(private val context: Context) : SiteStore {
     var lastId = 1L
 
     internal fun getId(): Long {
         return lastId++
     }
 
-    val  sites = ArrayList<SiteModel>()
+    var sites = mutableListOf<SiteModel>()
+
+    init {
+        if (exists(context, JSON_FILE)) {
+            deserialize()
+        }
+    }
 
     override fun findAll(): List<SiteModel> {
         return sites
@@ -29,11 +51,11 @@ class SiteMemStore : SiteStore {
 
 
     override fun create(site: SiteModel): Long {
-        site.id = getId()
-        sites.add(site)
+        site.id = generateRandomId()
+        sites.add(site.copy())
+        serialize()
         return site.id
     }
-
 
     override fun getkpi(siteID: Long): MutableList<SiteDataModel>? {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
@@ -56,4 +78,15 @@ class SiteMemStore : SiteStore {
         sites.forEach{ Timber.i("${it}") }
     }
 
+    private fun serialize() {
+        val jsonString = gsonBuilder.toJson(sites, listType)
+        write(context, JSON_FILE, jsonString)
+    }
+
+    private fun deserialize() {
+        val jsonString = read(context, JSON_FILE)
+        sites = gsonBuilder.fromJson(jsonString, listType)
+    }
+
 }
+

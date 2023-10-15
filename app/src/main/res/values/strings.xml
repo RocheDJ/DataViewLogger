@@ -6,5 +6,5 @@
     <string name="menu_Back">Back to Main Menu</string>
     <string name="menu_ScanQRCodeSelected">Scan QR code Selected</string>
     <string name="Permission_Denied">Permission Denied</string>
-    <string name="menu_Menu">Menu</string>
+    <string name="menu_F1">F1</string>
 </resources>

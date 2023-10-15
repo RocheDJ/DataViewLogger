@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/item_Menu"
+        android:id="@+id/item_F1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|left"
         android:icon="@drawable/industry40"
-        android:title="@string/menu_Menu"
+        android:title="@string/menu_F1"
         app:showAsAction="always" />
 
     <item

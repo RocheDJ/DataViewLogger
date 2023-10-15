@@ -23,7 +23,7 @@ class KpiListActivity : AppCompatActivity() {
     lateinit var kpiGRV: GridView
     lateinit var kpiList: List<SiteDataModel>
     lateinit var app: MainApp
-    var dummyQRId : Long =0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityKpiListBinding.inflate(layoutInflater)
@@ -42,14 +42,7 @@ class KpiListActivity : AppCompatActivity() {
         // reference to main app
         app = application as MainApp
 
-        // populate the models with dummy data for now
-        loadDummyData()
-        // initialize our kpi adapter
-        // and passing kpi list and context.
 
-        // load with QR code Data
-        //Todo: fix error here
-       // val lQRcode :Long = app.qrCode.toLong() //dummyQRId
         val strQRCode : String = app.qrCode
         try {
             // some code
@@ -94,37 +87,5 @@ class KpiListActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-    // ---------------- Add dummy Data --------------------------------------------
-    private fun loadDummyData(){
 
-        var mySiteData = ArrayList<SiteDataModel>()
-        var mySite = SiteModel(data = mySiteData)
-        var myKPI : SiteDataModel
-        mySite.description = "My Test Site 001"
-        mySite.id = app.sites.create(mySite)
-        dummyQRId =  mySite.id
-        myKPI = SiteDataModel(1,"Temperature",R.drawable.temp,23.4,"Deg C")
-        app.sites.addkpi(mySite.id,myKPI)
-        myKPI = SiteDataModel(1,"Motor RPM",R.drawable.speedometer,800.0,"RPM")
-        app.sites.addkpi(mySite.id,myKPI)
-        myKPI = SiteDataModel(1,"Valve Status",R.drawable.valve,0.0,"OFF")
-        app.sites.addkpi(mySite.id,myKPI)
-        myKPI = SiteDataModel(1,"Flow Rate",R.drawable.flow,125.0,"L/m")
-        app.sites.addkpi(mySite.id,myKPI)
-        myKPI = SiteDataModel(1,"Tank Level",R.drawable.tank,65.0,"%")
-        app.sites.addkpi(mySite.id,myKPI)
-
-        var mySiteData_1 = ArrayList<SiteDataModel>()
-        var mySite_1 = SiteModel(data = mySiteData_1)
-        var myKPI_1 : SiteDataModel
-        mySite_1.description = "My Test Site 002"
-        mySite_1.id = app.sites.create(mySite_1)
-        dummyQRId =  mySite_1.id
-        myKPI_1 = SiteDataModel(1,"Valve Status",R.drawable.valve,0.0,"OFF")
-        app.sites.addkpi(mySite_1.id,myKPI_1)
-        myKPI_1 = SiteDataModel(1,"Flow Rate",R.drawable.flow,125.0,"L/m")
-        app.sites.addkpi(mySite_1.id,myKPI_1)
-        myKPI_1 = SiteDataModel(1,"Tank Level",R.drawable.tank,65.0,"%")
-        app.sites.addkpi(mySite_1.id,myKPI_1)
-    }
 }

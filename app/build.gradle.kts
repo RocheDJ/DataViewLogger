@@ -51,4 +51,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //barcode
     implementation("com.google.android.gms:play-services-vision:20.1.3")
+    // google JSON To Object converter
+    implementation("com.google.code.gson:gson:2.9.0")
+
 }
