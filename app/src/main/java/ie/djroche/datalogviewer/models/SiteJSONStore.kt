@@ -16,16 +16,7 @@ val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
 
 val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
 
-fun generateRandomId(): Long {
-    return Random().nextLong()
-}
-
 class SiteJSONStore(private val context: Context) : SiteStore {
-    var lastId = 1L
-
-    internal fun getId(): Long {
-        return lastId++
-    }
 
     var sites = mutableListOf<SiteModel>()
 
@@ -39,7 +30,7 @@ class SiteJSONStore(private val context: Context) : SiteStore {
         return sites
     }
 
-    override fun find(siteID: Long): SiteModel? {
+    override fun find(siteID: String): SiteModel? {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         return foundSite
     }
@@ -50,14 +41,13 @@ class SiteJSONStore(private val context: Context) : SiteStore {
     }
 
 
-    override fun create(site: SiteModel): Long {
-        site.id = generateRandomId()
+    override fun create(site: SiteModel): String {
         sites.add(site.copy())
         serialize()
         return site.id
     }
 
-    override fun getkpi(siteID: Long): MutableList<SiteDataModel>? {
+    override fun getkpi(siteID: String): MutableList<SiteKPIModel>? {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         if (foundSite != null) {
            return foundSite.data

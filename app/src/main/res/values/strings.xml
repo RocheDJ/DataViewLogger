@@ -7,4 +7,8 @@
     <string name="menu_ScanQRCodeSelected">Scan QR code Selected</string>
     <string name="Permission_Denied">Permission Denied</string>
     <string name="menu_F1">F1</string>
+    <string name="_grid_tile_selected"> grid tile selected.</string>
+    <string name="scanner_has_been_closed">Scanner has been closed.</string>
+    <string name="scanned_value_eq">Scanned value =</string>
+    <string name="scanned_value_error">Scanned value error</string>
 </resources>

@@ -8,11 +8,11 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.models.SiteDataModel
+import ie.djroche.datalogviewer.models.SiteKPIModel
 
 internal class GridRVAdapter(
     // variables for Site KPIs
-    private val kpiList: List<SiteDataModel>,
+    private val kpiList: List<SiteKPIModel>,
     private val context: Context
 ) :
     BaseAdapter() {

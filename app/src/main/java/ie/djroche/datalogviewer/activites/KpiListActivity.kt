@@ -6,14 +6,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.GridView
-import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
-
 import ie.djroche.datalogviewer.main.MainApp
-import ie.djroche.datalogviewer.models.SiteDataModel
-import ie.djroche.datalogviewer.models.SiteModel
+import ie.djroche.datalogviewer.models.SiteKPIModel
 import timber.log.Timber
 
 class KpiListActivity : AppCompatActivity() {
@@ -21,7 +19,7 @@ class KpiListActivity : AppCompatActivity() {
 
     // variables for grid view and kpi list
     lateinit var kpiGRV: GridView
-    lateinit var kpiList: List<SiteDataModel>
+    lateinit var kpiList: List<SiteKPIModel>
     lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +33,9 @@ class KpiListActivity : AppCompatActivity() {
         // bind the activity View
         setContentView(binding.root)
 
-
         // initializing variables of grid view with their ids.
         kpiGRV = findViewById(R.id.idGRV)
-        kpiList = ArrayList<SiteDataModel>()
+        kpiList = ArrayList<SiteKPIModel>()
         // reference to main app
         app = application as MainApp
 
@@ -59,17 +56,11 @@ class KpiListActivity : AppCompatActivity() {
         //  adding on item
         // click listener for our grid view.
         kpiGRV.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            // inside on click method we are simply displaying
-            // a toast message with course name.
-            Toast.makeText(
-                applicationContext, kpiList[position].title + " selected",
-                Toast.LENGTH_SHORT
-            ).show()
+            //ToDo: add action for grid item click
+            Snackbar.make( kpiGRV,kpiList[position].title + R.string._grid_tile_selected, Snackbar.LENGTH_LONG)
+                .show()
         }
-
-
         Timber.i("KPI List Activity started...")
-
     }
 
     // ------------------   Load the Menu Items  --------------------------

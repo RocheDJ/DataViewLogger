@@ -23,6 +23,14 @@
             app:titleTextColor="@color/colorPrimary" />
 
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        ...
     </com.google.android.material.appbar.AppBarLayout>
+
 
 </RelativeLayout>

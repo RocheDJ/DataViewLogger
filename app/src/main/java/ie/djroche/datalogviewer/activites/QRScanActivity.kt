@@ -8,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.vision.CameraSource
@@ -20,6 +19,7 @@ import android.view.SurfaceHolder
 import java.io.IOException
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Detector.Detections
+import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.main.MainApp
 
 class QRScanActivity : AppCompatActivity() {
@@ -125,7 +125,7 @@ class QRScanActivity : AppCompatActivity() {
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
-                Toast.makeText(applicationContext, "Scanner has been closed", Toast.LENGTH_SHORT)
+                Snackbar.make(binding.root,getString(R.string.scanner_has_been_closed), Snackbar.LENGTH_LONG)
                     .show()
             }
 
@@ -134,16 +134,17 @@ class QRScanActivity : AppCompatActivity() {
                 if (barcodes.size() == 1) {
                     scannedValue = barcodes.valueAt(0).rawValue
                     app.qrCode = scannedValue
-                    //Don't forget to add this line printing value or finishing activity must run on main thread
                     runOnUiThread {
                         cameraSource.stop()
-                        Toast.makeText(this@QRScanActivity, "value- $scannedValue", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root,getString(R.string.scanner_has_been_closed) + " $scannedValue", Snackbar.LENGTH_LONG)
+                            .show()
                         setResult(RESULT_OK);
                         finish()
                     }
                 }else
                 {
-                    Toast.makeText(this@QRScanActivity, "value- else", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root,getString(R.string.scanned_value_error) , Snackbar.LENGTH_SHORT)
+                        .show()
                 }
             }
         })
@@ -159,7 +160,7 @@ class QRScanActivity : AppCompatActivity() {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupControls()
             } else {
-                Toast.makeText(applicationContext, "@string/Permission_Denied", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,getString(R.string.Permission_Denied) , Snackbar.LENGTH_SHORT).show()
             }
         }
     }
