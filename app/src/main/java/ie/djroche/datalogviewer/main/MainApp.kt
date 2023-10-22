@@ -10,7 +10,7 @@ import timber.log.Timber.Forest.i
 class MainApp : Application()  {
     lateinit var sites : SiteStore
     lateinit var users : UserStore
-  //  val sites = SiteMemStore()
+
     var qrCode : String = ""
     override fun onCreate() {
         super.onCreate()

@@ -37,4 +37,10 @@ IOT downloaded from [Flat-icon](<a href="https://www.flaticon.com/free-icons/iot
 
 Android Menu Icons From[Google](https://fonts.google.com/icons)
 
-Scanning a QR code in Kotlin [medium](https://harshitabambure.medium.com/barcode-scanner-and-qr-code-scanner-android-kotlin-b911b1299f65)
+Scanning a QR code in Kotlin [Medium](https://harshitabambure.medium.com/barcode-scanner-and-qr-code-scanner-android-kotlin-b911b1299f65)
+
+Adding A Splash screen in android [Medium](https://medium.com/geekculture/implementing-the-perfect-splash-screen-in-android-295de045a8dc)
+
+Using a launcher theme to add
+a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-screen-in-android-3bd9552b92a5)
+
