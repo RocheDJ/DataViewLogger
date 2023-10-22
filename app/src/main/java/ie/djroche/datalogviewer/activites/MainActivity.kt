@@ -12,8 +12,10 @@ import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteListener
 import ie.djroche.datalogviewer.databinding.ActivityMainBinding
+import ie.djroche.datalogviewer.helpers.cancelRequests
 import ie.djroche.datalogviewer.helpers.loadDummySiteData
 import ie.djroche.datalogviewer.helpers.loadDummyUserData
+import ie.djroche.datalogviewer.helpers.sendTestRequest
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
@@ -59,12 +61,19 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             }
             R.id.item_F1->{
                 // populate the models with dummy data for now
-                loadDummyUserData(app)
-                loadDummySiteData(app)
+                //loadDummyUserData(app)
+              //  loadDummySiteData(app)
+                sendTestRequest(app)
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onStop() {
+        super.onStop()
+        cancelRequests(app) // cancel all outstanding HTTP requests
+    }
+
     // -----------------------------------------------------------------------------------------------------
     private val getResult =
         registerForActivityResult(

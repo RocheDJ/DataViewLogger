@@ -53,6 +53,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-vision:20.1.3")
     // google JSON To Object converter
     implementation("com.google.code.gson:gson:2.9.0")
-
-
+    // volly FTTP Lib for requests
+    implementation("com.android.volley:volley:1.2.1")
 }

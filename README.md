@@ -44,3 +44,5 @@ Adding A Splash screen in android [Medium](https://medium.com/geekculture/implem
 Using a launcher theme to add
 a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-screen-in-android-3bd9552b92a5)
 
+Adding Automated test scripts [Kotlin Ref](https://kotlinlang.org/docs/jvm-test-using-junit.html#add-dependencies)
+                              [Android Studio Ref](https://developer.android.com/training/testing/local-tests)
