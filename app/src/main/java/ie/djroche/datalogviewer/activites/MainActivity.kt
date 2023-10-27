@@ -1,20 +1,22 @@
 package ie.djroche.datalogviewer.activites
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteListener
 import ie.djroche.datalogviewer.databinding.ActivityMainBinding
 import ie.djroche.datalogviewer.helpers.cancelRequests
-import ie.djroche.datalogviewer.helpers.loadDummySiteData
-import ie.djroche.datalogviewer.helpers.loadDummyUserData
+import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
+
 import ie.djroche.datalogviewer.helpers.sendTestRequest
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         // launch and bind the recycler view
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
+
         binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
 
         Timber.i("Main Activity started...")
@@ -53,17 +56,22 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     // ------------------   Process the Menu Items events  --------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            // General Help function  for testing
+            R.id.item_F1->{
+                //sendTestRequest(app)
+                sendReadQRDataRequest(app,"QR-000006-000003")
+            }
+            //scan QR code
             R.id.item_ScanQR -> {
                 showScanQR()
             }
+            // show all items in grid
             R.id.item_Grid ->{
                 showGrid()
             }
-            R.id.item_F1->{
-                // populate the models with dummy data for now
-                //loadDummyUserData(app)
-              //  loadDummySiteData(app)
-                sendTestRequest(app)
+            //load settings
+            R.id.item_settings->{
+                showSettings()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -74,6 +82,48 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         cancelRequests(app) // cancel all outstanding HTTP requests
     }
 
+
+    // -----------------------------------------------------------------------------------------------------
+    private fun showGrid() {
+        Timber.i("Show grid selected")
+        //launch the KPI page
+        val launcherIntent = Intent(this, KpiListActivity::class.java)
+        getResult.launch(launcherIntent)
+    }
+    // -----------------------------------------------------------------------------------------------------
+    private fun showScanQR() {
+        Timber.i("DataLogViewer Scan QR selected")
+        app.qrCode = "-"
+        //launch the KPI page
+        val launcherIntent = Intent(this, QRScanActivity::class.java)
+        getResultQRScan.launch(launcherIntent)
+        //ToDo: Validate the QR Code
+    }
+    // -----------------------------------------------------------------------------------------------------
+    private fun showSettings() {
+        Timber.i("DataLogViewer Settings selected")
+        app.qrCode = "-"
+        //launch the KPI page
+        val launcherIntent = Intent(this, SettingsActivity::class.java)
+        getResultSettings.launch(launcherIntent)
+    }
+    // -----------------------------------------------------------------------------------------------------
+    override fun onSiteClick(site: SiteModel) {
+        val launcherIntent = Intent(this, MainActivity::class.java)
+        getClickResult.launch(launcherIntent)
+        app.qrCode =site.qrcode
+        showGrid()
+    }
+    // -----------------------------------------------------------------------------------------------------
+    private val getClickResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                (binding.recyclerView.adapter)?.
+                notifyItemRangeChanged(0,app.sites.findAll().size)
+            }
+        }
     // -----------------------------------------------------------------------------------------------------
     private val getResult =
         registerForActivityResult(
@@ -97,38 +147,11 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             }
         }
     // -----------------------------------------------------------------------------------------------------
-    private fun showGrid() {
-        Timber.i("Show grid selected")
-        //launch the KPI page
-        val launcherIntent = Intent(this, KpiListActivity::class.java)
-        getResult.launch(launcherIntent)
-    }
-    // -----------------------------------------------------------------------------------------------------
-    private fun showScanQR() {
-        Timber.i("DataLogViewer Scan QR selected")
-        app.qrCode = "-"
-        //launch the KPI page
-        val launcherIntent = Intent(this, QRScanActivity::class.java)
-        getResultQRScan.launch(launcherIntent)
-        //ToDo: Validate the QR Code
-    }
-    // -----------------------------------------------------------------------------------------------------
-    override fun onSiteClick(site: SiteModel) {
-        val launcherIntent = Intent(this, MainActivity::class.java)
-        getClickResult.launch(launcherIntent)
-        app.qrCode =site.qrcode
-        showGrid()
-    }
-    // -----------------------------------------------------------------------------------------------------
-    private val getClickResult =
+    private val getResultSettings =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0,app.sites.findAll().size)
-            }
+            app.preferences = PreferenceManager.getDefaultSharedPreferences(this)
         }
-
 } // ------------------------------END Of Class -----
 

@@ -1,13 +1,20 @@
 package ie.djroche.datalogviewer.helpers
 
+import android.content.Context
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.main.MainApp
+import ie.djroche.datalogviewer.models.JSON_FILE
+import ie.djroche.datalogviewer.models.JSON_USERFILE
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
+import ie.djroche.datalogviewer.models.gsonBuilder
+import ie.djroche.datalogviewer.models.listType
 import timber.log.Timber
 
-fun loadDummyUserData(app: MainApp) {
+
+fun loadDummyUserJSONData(context: Context) {
+    var dummyUsers = mutableListOf<UserModel>()
     var myNewUser_1: UserModel = UserModel()
     var myNewUser_2: UserModel = UserModel()
     try {
@@ -16,22 +23,27 @@ fun loadDummyUserData(app: MainApp) {
         myNewUser_1.lastName = "simpson"
         myNewUser_1.password = "secret"
 
-        app.users.create(myNewUser_1)
+        dummyUsers.add(myNewUser_1.copy())
 
         myNewUser_2.email = "marge@simpson.com"
         myNewUser_2.firstName = "marge"
         myNewUser_2.lastName = "simpson"
         myNewUser_2.password = "secrettoo"
 
-        app.users.create(myNewUser_2)
+        dummyUsers.add(myNewUser_2.copy())
+
+        val jsonString = gsonBuilder.toJson(dummyUsers, listType)
+        write(context, JSON_USERFILE, jsonString)
+
     } catch (e: Exception) {
         Timber.e("Cannot loadDummy Site Data: %s", e.toString());
     }
 }
 
-fun loadDummySiteData(app: MainApp){
+fun loadDummyJSONSiteData(context: Context,userID :String){
         var  myNewSite : SiteModel = SiteModel(data=mutableListOf<SiteKPIModel>())
         var  myNewSite1 : SiteModel = SiteModel(data=mutableListOf<SiteKPIModel>())
+        var dummySites = mutableListOf<SiteModel>()
         var id :String
         try {
             // create the site data for 1st site
@@ -43,17 +55,18 @@ fun loadDummySiteData(app: MainApp){
             myNewSite.data.add(SiteKPIModel(4,"Flow Rate", R.drawable.flow,125.0,"L/m").copy())
             myNewSite.data.add(SiteKPIModel(5,"Tank Level", R.drawable.tank,65.0,"%").copy())
             myNewSite.qrcode = "QR-000006-000001"
-            myNewSite.userid = app.users.findUserByEmail("homer@simpson.com")!!.id
-
-            id = app.sites.create(myNewSite.copy())
+            myNewSite.userid = userID
+            dummySites.add(myNewSite.copy())
 
             // create the site data for 2nd site
-            myNewSite1.description = "Marge Site 002"
+            myNewSite1.description = "Homer Site 002"
             myNewSite1.data.add(SiteKPIModel(3,"Temperature", R.drawable.temp,13.4,"Deg C").copy())
             myNewSite1.data.add(SiteKPIModel(4,"Motor RPM", R.drawable.speedometer,100.0,"RPM").copy())
             myNewSite1.qrcode = "QR-000006-000002"
-            myNewSite1.userid = app.users.findUserByEmail("marge@simpson.com")!!.id
-            id = app.sites.create(myNewSite1.copy())
+            myNewSite1.userid = userID
+            dummySites.add(myNewSite1.copy())
+            val jsonString = gsonBuilder.toJson(dummySites, listType)
+            write(context, JSON_FILE, jsonString)
 
         }catch (e: Exception) {
             Timber.e("Cannot loadDummy Site Data: %s", e.toString());

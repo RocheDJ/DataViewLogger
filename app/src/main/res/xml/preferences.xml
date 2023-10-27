@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreferenceCompat
+        android:key="JSONData"
+        android:title="Use Local Test Data"
+        app:defaultValue="true"
+        app:summary="Use a Local JSON data file instead of API" />
+
+
+    <EditTextPreference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:defaultValue="http://www.kilderryds00.com"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Edit API Endpoint"
+        app:key="Endpoint"
+        app:summary="API interface end point " />
+
+    <EditTextPreference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:defaultValue="https://www.google.ie"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Test Endpoint"
+        app:key="TestEndPoint"
+        app:summary="Web Access Test Endpoint" />
+
+    <Preference
+        android:key="feedback"
+        android:summary="To be implemeented"
+        android:title="Send feedback" />
+
+
+
+</PreferenceScreen>

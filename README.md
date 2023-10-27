@@ -46,3 +46,12 @@ a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-scr
 
 Adding Automated test scripts [Kotlin Ref](https://kotlinlang.org/docs/jvm-test-using-junit.html#add-dependencies)
                               [Android Studio Ref](https://developer.android.com/training/testing/local-tests)
+
+Adding a settings configuration
+    [Android Developer](https://developer.android.com/develop/ui/views/components/settings#kts)
+Note for API request had to use android:usesCleartextTraffic="true" in manifest
+Get API requests [volly](https://google.github.io/volley/simple.html)
+
+Post API requests [volly](https://www.geeksforgeeks.org/android-update-data-in-api-using-volley-with-kotlin/)
+
+  

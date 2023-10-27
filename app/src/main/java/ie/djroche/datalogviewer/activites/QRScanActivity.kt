@@ -141,10 +141,6 @@ class QRScanActivity : AppCompatActivity() {
                         setResult(RESULT_OK);
                         finish()
                     }
-                }else
-                {
-                    Snackbar.make(binding.root,getString(R.string.scanned_value_error) , Snackbar.LENGTH_SHORT)
-                        .show()
                 }
             }
         })

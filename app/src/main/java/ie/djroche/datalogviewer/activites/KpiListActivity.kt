@@ -78,5 +78,4 @@ class KpiListActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

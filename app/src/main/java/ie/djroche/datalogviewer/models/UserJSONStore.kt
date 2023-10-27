@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import ie.djroche.datalogviewer.helpers.exists
+import ie.djroche.datalogviewer.helpers.loadDummyUserJSONData
 import ie.djroche.datalogviewer.helpers.read
 import ie.djroche.datalogviewer.helpers.write
 import java.lang.reflect.Type
@@ -21,7 +22,11 @@ class UserJSONStore( private val context: Context):UserStore
 
     // if user file exists read the data from it
     init {
+        //if user file does not exist create it
         if (exists(context, JSON_USERFILE)) {
+            deserialize()
+        } else{
+            loadDummyUserJSONData(context)
             deserialize()
         }
     }

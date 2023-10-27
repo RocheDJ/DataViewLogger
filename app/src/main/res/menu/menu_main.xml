@@ -12,6 +12,14 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/item_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_button_gear"
+        android:title="@string/menu_F1"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/item_Grid"
         android:icon="@drawable/dataset_24"
         android:title="@string/menu_DataSet"

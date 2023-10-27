@@ -1,4 +1,5 @@
 <resources>
+    <!-- Menu Strings -->
     <string name="app_name">Data Log Viewer</string>
     <string name="hello_DataLogViewer">Hello Data Log Viewer</string>
     <string name="menu_ScanQRCode">Scan QR code</string>
@@ -11,4 +12,23 @@
     <string name="scanner_has_been_closed">Scanner has been closed.</string>
     <string name="scanned_value_eq">Scanned value =</string>
     <string name="scanned_value_error">Scanned value error</string>
+    <string name="please_scan_qr_code">Please scan QR code</string>
+    <string name="user_name">User: </string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

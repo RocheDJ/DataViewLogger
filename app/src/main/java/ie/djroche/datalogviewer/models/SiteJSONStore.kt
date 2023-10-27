@@ -5,9 +5,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.lang.reflect.Type
-import java.util.Random
 import ie.djroche.datalogviewer.helpers.*
 import android.content.Context
+import ie.djroche.datalogviewer.R
+import ie.djroche.datalogviewer.main.MainApp
 
 const val JSON_FILE = "sites.json"
 
@@ -16,12 +17,16 @@ val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
 
 val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
 
-class SiteJSONStore(private val context: Context) : SiteStore {
+class SiteJSONStore(private val context: Context,private val userID : String) : SiteStore {
 
     var sites = mutableListOf<SiteModel>()
 
     init {
         if (exists(context, JSON_FILE)) {
+            deserialize()
+        }else{
+            // create the file and read it
+            loadDummyJSONSiteData(context,userID)
             deserialize()
         }
     }
