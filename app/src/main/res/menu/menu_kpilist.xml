@@ -6,4 +6,17 @@
         android:icon="@drawable/arrow_back_24"
         android:title="@string/menu_Back"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_Edit"
+        android:icon="@drawable/edit_black_24"
+        android:title="@string/menu_Back"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_Done"
+        android:icon="@drawable/done_24"
+        android:title="@string/menu_Back"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

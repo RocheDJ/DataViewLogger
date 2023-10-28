@@ -23,8 +23,8 @@ class SiteRVAdaptor constructor(private var sites: List<SiteModel>,
     }
     //------------------------------------------
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-        val placemark = sites[holder.adapterPosition]
-        holder.bind(placemark, listener)
+        val site = sites[holder.adapterPosition]
+        holder.bind(site, listener)
     }
     //------------------------------------------
     override fun getItemCount(): Int = sites.size

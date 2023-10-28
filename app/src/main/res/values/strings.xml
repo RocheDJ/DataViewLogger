@@ -13,6 +13,7 @@
     <string name="scanned_value_eq">Scanned value =</string>
     <string name="scanned_value_error">Scanned value error</string>
     <string name="please_scan_qr_code">Please scan QR code</string>
+    <string name="edit_site">Edit site: </string>
     <string name="user_name">User: </string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

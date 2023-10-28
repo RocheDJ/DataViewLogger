@@ -33,12 +33,12 @@
             android:verticalSpacing="6dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <TextView
-            android:id="@+id/tvDescription"
+        <EditText
+            android:id="@+id/etDescription"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="sans-serif-black"
-            android:text="TextView"
+            android:text="EditText"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 

@@ -12,6 +12,7 @@ import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
+import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
 
 class KpiListActivity : AppCompatActivity() {
@@ -21,6 +22,7 @@ class KpiListActivity : AppCompatActivity() {
     lateinit var kpiGRV: GridView
     lateinit var kpiList: List<SiteKPIModel>
     lateinit var app: MainApp
+    var selectedSite = SiteModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,20 +41,24 @@ class KpiListActivity : AppCompatActivity() {
         // reference to main app
         app = application as MainApp
 
-
         val strQRCode : String = app.qrCode
+
+        //retrieve the information for the site
         try {
+            selectedSite = app.sites.findByQR(strQRCode)!!
             // some code
-            kpiList = app.sites.findByQR(strQRCode)!!.data
+            kpiList = selectedSite.data
             val kpiAdapter = GridRVAdapter(kpiList = kpiList , this@KpiListActivity)
             kpiGRV.adapter = kpiAdapter
+
+            // load the site Description dont allow editing until enabled
+            binding.etDescription.setText(selectedSite.description)
+            binding.etDescription.isEnabled = false
+
         } catch (e: Exception) {
             Timber.i("KPI List Activity ERROR" + e.message)
         }
 
-        // load the site Description
-       // binding.tvDescription.text = app.sites.find(lQRcode)!!.description
-        binding.tvDescription.text = app.sites.findByQR(strQRCode)!!.description
         //  adding on item
         // click listener for our grid view.
         kpiGRV.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -68,14 +74,32 @@ class KpiListActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_kpilist, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
     // -------------------   Process the Click ----------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_Back -> {
                 finish()
             }
+            R.id.item_Edit-> {
+                binding.etDescription.setTextIsSelectable(true);
+                binding.etDescription.isEnabled = true
+                binding.toolbar.menu.getItem(1).isVisible =false
+                binding.toolbar.menu.getItem(2).isVisible =true
+                Timber.i("Edit site Pressed")
+            }
+            R.id.item_Done->{
+                binding.etDescription.setTextIsSelectable(false);
+                binding.etDescription.isEnabled = false
+                binding.toolbar.menu.getItem(1).isVisible =true
+                binding.toolbar.menu.getItem(2).isVisible =false
+                UpdateSiteDescription()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
+    private fun UpdateSiteDescription(){
+        selectedSite.description = binding.etDescription.text.toString()
+        app.sites.update(selectedSite.copy())
+    }
+
 }
