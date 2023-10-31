@@ -1,4 +1,4 @@
-package ie.djroche.datalogviewer.activites
+package ie.djroche.datalogviewer.activities
 
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager

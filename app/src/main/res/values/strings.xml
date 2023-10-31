@@ -6,6 +6,8 @@
     <string name="menu_DataSet">View KPI</string>
     <string name="menu_Back">Back to Main Menu</string>
     <string name="menu_ScanQRCodeSelected">Scan QR code Selected</string>
+    <string name="menu_login">Click to Login</string>
+    <string name="menu_logout">Click to Log Out</string>
     <string name="Permission_Denied">Permission Denied</string>
     <string name="menu_F1">F1</string>
     <string name="_grid_tile_selected"> grid tile selected.</string>
@@ -15,6 +17,8 @@
     <string name="please_scan_qr_code">Please scan QR code</string>
     <string name="edit_site">Edit site: </string>
     <string name="user_name">User: </string>
+
+    <string name="enter_valid_username_password">Please enter a valid username and password </string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -32,4 +36,13 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 </resources>

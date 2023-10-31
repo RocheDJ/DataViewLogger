@@ -1,4 +1,4 @@
-package ie.djroche.datalogviewer.activites
+package ie.djroche.datalogviewer.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

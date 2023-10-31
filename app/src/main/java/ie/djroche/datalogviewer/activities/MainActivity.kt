@@ -1,7 +1,6 @@
-package ie.djroche.datalogviewer.activites
+package ie.djroche.datalogviewer.activities
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,7 +16,6 @@ import ie.djroche.datalogviewer.databinding.ActivityMainBinding
 import ie.djroche.datalogviewer.helpers.cancelRequests
 import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
 
-import ie.djroche.datalogviewer.helpers.sendTestRequest
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
@@ -30,10 +28,10 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         //set toolbar contents
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
+
         // bind the activity View
         setContentView(binding.root)
 
@@ -43,14 +41,21 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         // launch and bind the recycler view
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-
-        binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
-
+        if (app.xLoggedin == true ){
+            ShowSites()
+        }
         Timber.i("Main Activity started...")
     }
     // ------------------   Load the Menu Items  --------------------------
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        if (app.xLoggedin == true ){
+              menu.getItem(4).isVisible =false
+              menu.getItem(5).isVisible =true
+        } else {
+            menu.getItem(4).isVisible =true
+            menu.getItem(5).isVisible =false
+        }
         return super.onCreateOptionsMenu(menu)
     }
     // ------------------   Process the Menu Items events  --------------------------
@@ -73,6 +78,15 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             R.id.item_settings->{
                 showSettings()
             }
+            // Log in
+            R.id.item_LogIn->{
+                showLogin()
+            }
+
+            // Log out
+            R.id.item_LogOut->{
+                LogOut()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -81,8 +95,20 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         super.onStop()
         cancelRequests(app) // cancel all outstanding HTTP requests
     }
-
-
+    // -----------------------------------------------------------------------------------------------------
+    private fun showLogin() {
+        Timber.i("Show Login selected")
+        //launch the KPI page
+        val launcherIntent = Intent(this, LoginActivity::class.java)
+        getResultLogin.launch(launcherIntent)
+    }
+    // -----------------------------------------------------------------------------------------------------
+    private fun LogOut() {
+        Timber.i("LogOut selected")
+        app.xLoggedin =false
+        binding.toolbar.menu.getItem(4).isVisible =true
+        binding.toolbar.menu.getItem(5).isVisible =false
+    }
     // -----------------------------------------------------------------------------------------------------
     private fun showGrid() {
         Timber.i("Show grid selected")
@@ -97,7 +123,6 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         //launch the KPI page
         val launcherIntent = Intent(this, QRScanActivity::class.java)
         getResultQRScan.launch(launcherIntent)
-        //ToDo: Validate the QR Code
     }
     // -----------------------------------------------------------------------------------------------------
     private fun showSettings() {
@@ -141,6 +166,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 Timber.i("QR Scan Returned OK")
+                //ToDo: Validate the QR Code
                 if  (app.qrCode != "-"){
                     showGrid()
                 }
@@ -151,7 +177,25 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            app.preferences = PreferenceManager.getDefaultSharedPreferences(this)
+            app.preferences = PreferenceManager.getDefaultSharedPreferences(this) // set the preferences
         }
+    // -----------------------------------------------------------------------------------------------------
+    private val getResultLogin =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Timber.i("Login OK")
+                app.LoadSitesForCurrentUser()
+                app.xLoggedin = true
+                binding.toolbar.menu.getItem(4).isVisible =true
+                binding.toolbar.menu.getItem(5).isVisible =false
+            }
+        }
+
+    // -----------------------------------------------------------------------------------------------------
+    private fun ShowSites(){
+        binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
+    }
 } // ------------------------------END Of Class -----
 

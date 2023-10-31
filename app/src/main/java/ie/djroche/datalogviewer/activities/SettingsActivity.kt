@@ -1,16 +1,12 @@
-package ie.djroche.datalogviewer.activites
-
+package ie.djroche.datalogviewer.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-
 import ie.djroche.datalogviewer.R
 
 class SettingsActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
@@ -20,6 +16,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         setContentView(R.layout.settings_activity)
     }
+
 
     //press back on settings return ok and finish
     override fun onBackPressed() {

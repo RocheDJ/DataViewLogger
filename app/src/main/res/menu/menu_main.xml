@@ -31,4 +31,18 @@
         android:icon="@drawable/ic_menu_qr"
         android:title="@string/menu_ScanQRCode"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/item_LogIn"
+        android:icon="@drawable/ic_menu_login"
+        android:title="@string/menu_login"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/item_LogOut"
+        android:icon="@drawable/ic_menu_logout"
+        android:title="@string/menu_logout"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

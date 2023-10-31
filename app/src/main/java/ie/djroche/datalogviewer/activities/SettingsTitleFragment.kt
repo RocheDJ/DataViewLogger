@@ -1,15 +1,16 @@
-package ie.djroche.datalogviewer.activites
+package ie.djroche.datalogviewer.activities
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
-
+import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.databinding.FragmentSettingsTitleBinding
-import ie.djroche.datalogviewer.databinding.SettingsActivityBinding
+
+
 
 class SettingsTitleFragment : Fragment() {
 
@@ -34,17 +35,10 @@ class SettingsTitleFragment : Fragment() {
         return retVal
     }
 
-
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         */
-        //
-        @JvmStatic
         fun newInstance(param1: String, param2: String) =
             SettingsTitleFragment().apply {
             }
     }
+
 }
