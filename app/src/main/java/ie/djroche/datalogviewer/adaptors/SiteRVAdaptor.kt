@@ -31,7 +31,6 @@ class SiteRVAdaptor constructor(private var sites: List<SiteModel>,
     //------------------------------------------
     class MainHolder(private val binding : CardSiteBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(site: SiteModel, listener: SiteListener) {
             binding.siteDescription.text = site.description
             binding.siteImageView.setImageResource(R.drawable.industry40)

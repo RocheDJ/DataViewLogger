@@ -10,11 +10,9 @@ import android.widget.TextView
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.models.SiteKPIModel
 
-internal class GridRVAdapter(
-    // variables for Site KPIs
-    private val kpiList: List<SiteKPIModel>,
-    private val context: Context
-) :
+internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
+                             private val context: Context
+                            ) :
     BaseAdapter() {
     // in base adapter class we are creating variables
     // for layout inflater, course image view and course text view.
@@ -22,6 +20,7 @@ internal class GridRVAdapter(
     private lateinit var titleTV: TextView
     private lateinit var iconIV: ImageView
     private lateinit var valueTV: TextView
+    private lateinit var unitTV: TextView
     // below method is use to return the count of course list
     override fun getCount(): Int {
         return kpiList.size
@@ -36,6 +35,8 @@ internal class GridRVAdapter(
     override fun getItemId(position: Int): Long {
         return 0
     }
+
+
 
     // get individual item of grid view.
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
@@ -55,17 +56,21 @@ internal class GridRVAdapter(
         }
         // on below line we are initializing our course image view
         // and course text view with their ids.
-        titleTV = convertView!!.findViewById(R.id.idTVTitle)
+        titleTV = convertView!!.findViewById(R.id.idTvTitle)
         valueTV = convertView!!.findViewById(R.id.idTVValue)
+        unitTV = convertView!!.findViewById(R.id.idTVUnit)
         iconIV = convertView!!.findViewById(R.id.idIVIcon)
         // setting image view.
         iconIV.setImageResource(kpiList.get(position).icon)
         // set title.
         titleTV.setText(kpiList.get(position).title)
+        //set unit
+        unitTV.setText(kpiList.get(position).unit)
         // set value.
         //ToDo: Round the value to be displaied
         valueTV.setText(kpiList.get(position).value.toString())
         //  return our convert view.
         return convertView
     }
+
 }

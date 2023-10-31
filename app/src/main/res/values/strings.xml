@@ -19,6 +19,7 @@
     <string name="user_name">User: </string>
     <string name="user_name_not_found">User name Not found </string>
     <string name="enter_valid_username_password">Please enter a valid username and password </string>
+    <string name="add_kpi">Add KPI</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>

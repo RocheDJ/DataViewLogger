@@ -16,7 +16,7 @@ val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
     .create()
 
 val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
-
+val listKpiType: Type = object : TypeToken<ArrayList<SiteKPIModel>>() {}.type
 class SiteJSONStore(private val context: Context,private val userID : String) : SiteStore {
 
     var sites = mutableListOf<SiteModel>()
@@ -64,8 +64,10 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
         var foundSite: SiteModel? = sites.find { p -> p.id == site.id }
         if (foundSite != null) {
             foundSite.description = site.description
+            foundSite.data = site.data
             //ToDo: add the updated data filelds
             logAll()
+            serialize()
         }
     }
 

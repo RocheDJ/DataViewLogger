@@ -1,11 +1,14 @@
 package ie.djroche.datalogviewer.activities
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.GridView
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.GridRVAdapter
@@ -13,6 +16,8 @@ import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
+import ie.djroche.datalogviewer.models.gsonBuilder
+import ie.djroche.datalogviewer.models.listKpiType
 import timber.log.Timber
 
 class KpiListActivity : AppCompatActivity() {
@@ -94,12 +99,63 @@ class KpiListActivity : AppCompatActivity() {
                 binding.toolbar.menu.getItem(2).isVisible =false
                 UpdateSiteDescription()
             }
+            R.id.item_AddKPI -> {
+                showScanQR()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
     private fun UpdateSiteDescription(){
         selectedSite.description = binding.etDescription.text.toString()
         app.sites.update(selectedSite.copy())
+    }
+    // --------------------------------------------------------------------------------------------
+    private fun showScanQR() {
+        Timber.i("DataLogViewer Scan QR selected")
+        app.qrCode = "-"
+        //launch the KPI page
+        val launcherIntent = Intent(this, QRScanActivity::class.java)
+        getResultQRScan.launch(launcherIntent)
+    }
+
+    // --------------------------------------------------------------------------------------------
+    private val getResultQRScan =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Timber.i("QR Scan Returned OK")
+                //ToDo: Validate the QR Code
+                try {
+                    if (app.qrCode != "-") {
+                        addKPI(app.qrCode)
+                    }
+                } catch (e: Exception) {
+                    Timber.i("getResultQRScan Error " + e.message)
+                }
+            }
+        }
+
+    // -------------------------------------------------------------------------------------------
+    private fun addKPI(kpiJSONString: String) {
+        try {
+            var addKPIList: MutableList<SiteKPIModel> = mutableListOf<SiteKPIModel>()
+            addKPIList = gsonBuilder.fromJson(kpiJSONString, listKpiType)
+            for (kpi in addKPIList) {
+                selectedSite.data.add(kpi)
+                app.sites.update(selectedSite.copy())
+                UpdateKPIList()
+            }
+        } catch (e: Exception) {
+            Timber.i("addKPI Error " + e.message)
+        }
+    }
+
+    // -------------------------------------------------------------------------------------------
+    private fun UpdateKPIList() {
+        kpiList = selectedSite.data
+        val kpiAdapter = GridRVAdapter(kpiList = kpiList, this@KpiListActivity)
+        kpiGRV.adapter = kpiAdapter
     }
 
 }

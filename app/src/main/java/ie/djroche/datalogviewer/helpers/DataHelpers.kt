@@ -51,7 +51,7 @@ fun loadDummyJSONSiteData(context: Context,userID :String) {
         // create the site data for 1st site
         myNewSite.description = "Homer Site 001"
         myNewSite.data.add(SiteKPIModel(1, "Temperature", R.drawable.temp, 23.4, "Deg C").copy())
-        myNewSite.data.add(SiteKPIModel(1, "Temperature", R.drawable.temp, 23.4, "Deg C").copy())
+        myNewSite.data.add(SiteKPIModel(1, "Conductivity", R.drawable.conductivity, 50.5, "%").copy())
         myNewSite.data.add(
             SiteKPIModel(
                 2,

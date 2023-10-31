@@ -19,4 +19,11 @@
         android:title="@string/menu_Back"
         app:showAsAction="always"
         android:visible="false"/>
+
+    <item
+        android:id="@+id/item_AddKPI"
+        android:icon="@drawable/ic_add_24"
+        android:title="@string/add_kpi"
+        app:showAsAction="always"
+        android:visible="true"/>
 </menu>

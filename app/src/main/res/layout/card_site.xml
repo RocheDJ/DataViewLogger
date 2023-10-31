@@ -10,14 +10,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_gradient"
         android:padding="16dp">
+
         <TextView
             android:id="@+id/siteDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:textColor="@color/black"
             android:textSize="30sp"
-            android:textColor="@color/colorPrimary"
             tools:text="A Title" />
 
         <ImageView

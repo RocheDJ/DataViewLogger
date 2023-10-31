@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             }
             // show all items in grid
             R.id.item_Grid ->{
-                showGrid()
+               showGrid()
             }
             //load settings
             R.id.item_settings->{
@@ -105,9 +105,13 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     // --------------------------------------------------------------------------------------------
     private fun showGrid() {
         Timber.i("Show grid selected")
-        //launch the KPI page
-        val launcherIntent = Intent(this, KpiListActivity::class.java)
-        getResult.launch(launcherIntent)
+        try{
+            //launch the KPI page
+            val launcherIntent = Intent(this, KpiListActivity::class.java)
+            getResult.launch(launcherIntent)
+        }catch (e: Exception) {
+            Timber.i("showGrid Error " + e.message)
+        }
     }
     // --------------------------------------------------------------------------------------------
     private fun showScanQR() {
