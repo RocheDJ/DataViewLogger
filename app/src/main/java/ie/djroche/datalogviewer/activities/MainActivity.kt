@@ -1,5 +1,5 @@
 package ie.djroche.datalogviewer.activities
-
+//------------------------------------------------------------------------------------------------
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +19,11 @@ import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
-
+//------------------------------------------------------------------------------------------------
 class MainActivity : AppCompatActivity(), SiteListener  {
     private lateinit var binding: ActivityMainBinding
     lateinit var app: MainApp
-
-    // -----------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -41,24 +40,18 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         // launch and bind the recycler view
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        if (app.xLoggedin == true ){
+        if (app.userLoggedIn == true ){
             ShowSites()
         }
         Timber.i("Main Activity started...")
     }
-    // ------------------   Load the Menu Items  --------------------------
+    // ------------------   Load the Menu Items  -------------------------------------------------
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (app.xLoggedin == true ){
-              menu.getItem(4).isVisible =false
-              menu.getItem(5).isVisible =true
-        } else {
-            menu.getItem(4).isVisible =true
-            menu.getItem(5).isVisible =false
-        }
+        UpdateMainMenuIcons()
         return super.onCreateOptionsMenu(menu)
     }
-    // ------------------   Process the Menu Items events  --------------------------
+    // ------------------   Process the Menu Items events  ---------------------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             // General Help function  for testing
@@ -90,33 +83,33 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         }
         return super.onOptionsItemSelected(item)
     }
-
+    // -------------------------------------------------------------------------------------------
     override fun onStop() {
         super.onStop()
         cancelRequests(app) // cancel all outstanding HTTP requests
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun showLogin() {
         Timber.i("Show Login selected")
         //launch the KPI page
         val launcherIntent = Intent(this, LoginActivity::class.java)
         getResultLogin.launch(launcherIntent)
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun LogOut() {
         Timber.i("LogOut selected")
-        app.xLoggedin =false
-        binding.toolbar.menu.getItem(4).isVisible =true
-        binding.toolbar.menu.getItem(5).isVisible =false
+        app.userLoggedIn =false
+        HideSites()
+        UpdateMainMenuIcons()
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun showGrid() {
         Timber.i("Show grid selected")
         //launch the KPI page
         val launcherIntent = Intent(this, KpiListActivity::class.java)
         getResult.launch(launcherIntent)
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun showScanQR() {
         Timber.i("DataLogViewer Scan QR selected")
         app.qrCode = "-"
@@ -124,7 +117,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         val launcherIntent = Intent(this, QRScanActivity::class.java)
         getResultQRScan.launch(launcherIntent)
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun showSettings() {
         Timber.i("DataLogViewer Settings selected")
         app.qrCode = "-"
@@ -132,14 +125,14 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         val launcherIntent = Intent(this, SettingsActivity::class.java)
         getResultSettings.launch(launcherIntent)
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     override fun onSiteClick(site: SiteModel) {
         val launcherIntent = Intent(this, MainActivity::class.java)
         getClickResult.launch(launcherIntent)
         app.qrCode =site.qrcode
         showGrid()
     }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private val getClickResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -149,7 +142,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
                 notifyItemRangeChanged(0,app.sites.findAll().size)
             }
         }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private val getResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -159,7 +152,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             }
         }
 
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private val getResultQRScan =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -172,30 +165,59 @@ class MainActivity : AppCompatActivity(), SiteListener  {
                 }
             }
         }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private val getResultSettings =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            app.preferences = PreferenceManager.getDefaultSharedPreferences(this) // set the preferences
+            // set the preferences
+            app.preferences = PreferenceManager.getDefaultSharedPreferences(this)
         }
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private val getResultLogin =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 Timber.i("Login OK")
-                app.LoadSitesForCurrentUser()
-                app.xLoggedin = true
-                binding.toolbar.menu.getItem(4).isVisible =true
-                binding.toolbar.menu.getItem(5).isVisible =false
+                app.userLoggedIn = true
+                UpdateMainMenuIcons()
+                ShowSites()
             }
         }
 
-    // -----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     private fun ShowSites(){
         binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
     }
-} // ------------------------------END Of Class -----
+    // --------------------------------------------------------------------------------------------
+    private fun HideSites(){
+        // hide sites
+        binding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
+    }
+    //---------------------------------------------------------------------------------------------
+    // show different menu icons depending on user logedd in status
+    private fun UpdateMainMenuIcons(){
+        if (app.userLoggedIn != true){
+            binding.toolbar.menu.getItem(0).isVisible =false// F1 test
+            binding.toolbar.menu.getItem(1).isVisible =false// F2 Settings
+            binding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
+            binding.toolbar.menu.getItem(3).isVisible =false// F4 QR scan
+            binding.toolbar.menu.getItem(4).isVisible =true// F5 logion
+            binding.toolbar.menu.getItem(5).isVisible =false // F6 logout
+
+        } else {
+            binding.toolbar.menu.getItem(0).isVisible =false// F1 test
+            binding.toolbar.menu.getItem(1).isVisible =true// F2 Settings
+            binding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
+            binding.toolbar.menu.getItem(3).isVisible =true// F4 QR scan
+            binding.toolbar.menu.getItem(4).isVisible =false// F5 logion
+            binding.toolbar.menu.getItem(5).isVisible =true // F6 logout
+        }
+
+
+    }
+
+
+} // ------------------------------END Of Class ---------------------------------------------------
 

@@ -56,7 +56,7 @@ class UserJSONStore( private val context: Context):UserStore
     override fun create(user: UserModel): String {
         users.add(user.copy())
         serialize()
-        return user.id
+        return user.id.toString()
     }
 
     //convert user Data to JSON and save

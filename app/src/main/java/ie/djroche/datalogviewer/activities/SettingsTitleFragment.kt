@@ -5,14 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 
 
 
-class SettingsTitleFragment : Fragment() {
+class SettingsTitleFragment : Fragment(){
+
+    var UserName : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class SettingsTitleFragment : Fragment() {
         text.setText(getString(R.string.app_name))
 
         text = retVal.findViewById(R.id.tvUser)
-        val userText : String = getString(R.string.user_name) + " Homer Simpson" //ToDo: add username variable
+        val userText : String = getString(R.string.user_name) + UserName
         text.setText(userText)
 
         return retVal

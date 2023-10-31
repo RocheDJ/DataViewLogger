@@ -1,4 +1,5 @@
 package ie.djroche.datalogviewer.main
+//-------------------------------------------------------------------------------------------------
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
@@ -14,16 +15,34 @@ import ie.djroche.datalogviewer.models.UserStore
 import timber.log.Timber
 import timber.log.Timber.Forest.i
 import kotlin.properties.Delegates
-
+//-------------------------------------------------------------------------------------------------
 class MainApp : Application()  {
+    //--------------------------------------------------------------------------------------------
     lateinit var sites : SiteStore
     lateinit var users : UserStore
+
     lateinit var httpQueue : RequestQueue // queue of HTTP requests
     lateinit var preferences: SharedPreferences // ref https://www.digitalocean.com/community/tutorials/android-sharedpreferences-kotlin
     lateinit var user : UserModel // active user
-    var xLoggedin by Delegates.notNull<Boolean>()
-    var qrCode : String = ""
 
+    private var xLoggedin :Boolean= false
+
+    var userLoggedIn: Boolean
+        get() = xLoggedin
+        set(value) {
+            if (value ==true){
+                LoadSitesForCurrentUser()
+                xLoggedin =true
+            } else
+            {
+                //todo: Disassoicate all sites
+                xLoggedin =false
+            }
+
+        }
+
+    var qrCode : String = ""
+//-------------------------------------------------------------------------------------------------
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
@@ -32,7 +51,6 @@ class MainApp : Application()  {
         xLoggedin =false
         // load and associate user data
         users = UserJSONStore(applicationContext)
-
         // get the logged in user username is not set then create it from user file
         val id = preferences.getString("UserID",null)
         if (id != null){
@@ -42,23 +60,23 @@ class MainApp : Application()  {
             // if no user defined use a defalt user
             user = users.findUserByEmail("homer@simpson.com")!!
             var editor = preferences.edit()
-            if (user != null) {
-                editor.putString("UserID",user.id)
+            if (user.id != null) {
+                editor.putString("UserID",user.id.toString())
             }
             editor.commit()
         }
         LoadSitesForCurrentUser()
-
         // create the http queue
         httpQueue = Volley.newRequestQueue(this)
         i("DataLogViewer started")
     }
-//load sites
+
     fun LoadSitesForCurrentUser(){
      // load the sites for the user
-        if (user != null) {
-            sites = SiteJSONStore(applicationContext,user.id)
+        if (user.id != null) {
+            sites = SiteJSONStore(applicationContext,user.id.toString())
         }
     }
+//-------- load sites for active user ------------------------------------------------------------
 
-}
+} // ------------------------------END Of Class ---------------------------------------------------

@@ -1,11 +1,12 @@
 package ie.djroche.datalogviewer.activities
-
+//------------------------------------------------------------------------------------------------
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
@@ -14,18 +15,19 @@ import ie.djroche.datalogviewer.helpers.ValidateUser
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.UserModel
 import timber.log.Timber
-
+//------------------------------------------------------------------------------------------------
 lateinit var app: MainApp
-
+//------------------------------------------------------------------------------------------------
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    lateinit var user : UserModel
+    var user : UserModel? = null
+    //---------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding  = ActivityLoginBinding.inflate(layoutInflater)
         app = application as MainApp
         //set the current logged in username
-        val currentUser = app.users.findUserById(app.preferences.getString("UserID","--").toString())
+        val currentUser : UserModel? =app.users.findUserById(app.preferences.getString("UserID","--").toString())
         if (currentUser != null) {
             binding.username.setText(currentUser.email.toString())
             //EditText on Editor Change Listener
@@ -40,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (s != null) {
+                        // check the length
                         if(s.length>4){
                             binding.btnLogin.isEnabled = true
                         } else
@@ -62,30 +65,44 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-private fun textChanged() {
-
-}
-//------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------
     private fun SignInPressed(view :View) {
     try {
         val userEmail = binding.username.text.toString()
-        user = app.users.findUserById(userEmail)!!
-        val checkPassword = binding.password.toString()
-        // if the username is not null  and password length >3
-        if ((user != null) && checkPassword.length > 3) {
-            val checkResult = ValidateUser(user, checkPassword)
-            if (checkResult == 0) {
-                app.user=user.copy()
-                setResult(RESULT_OK)
-                finish()
-            } else {
-                //ToDo: add option to register user
-                Snackbar.make(view, getString(R.string.enter_valid_username_password), Snackbar.LENGTH_LONG)
-                    .show()
+        var localUser: UserModel? = null
+        localUser = app.users.findUserByEmail(userEmail)
+
+        // hide the keyboard when we click the button
+        // ref: https://www.geeksforgeeks.org/how-to-close-or-hide-android-soft-keyboard-with-kotlin/
+        val inputMethodManager =
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            // on below line hiding our keyboard.
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0)
+
+        if (localUser != null){
+            user = localUser.copy()
+            val checkPassword = binding.password.text.toString()
+            if (checkPassword.length > 3) {
+                val checkResult = ValidateUser(user!!, checkPassword)
+                if (checkResult == 0) {
+                    app.user = user!!.copy()
+                    setResult(RESULT_OK)
+                    finish()
+                } else {
+                    Snackbar.make(view,
+                        getString(R.string.enter_valid_username_password), Snackbar.LENGTH_LONG)
+                        .show()
+                }
             }
+        } else{
+            //ToDo: add option to register user
+            Snackbar.make(view,
+                    getString(R.string.user_name_not_found), Snackbar.LENGTH_LONG)
+                    .show()
         }
     } catch (e: Exception) {
         Timber.i("SignInPressed ERROR" + e.message)
     }
 }
-}
+
+}//-------------Class end -------------------------------------------------------------------------

@@ -16,13 +16,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_button_gear"
-        android:title="@string/menu_F1"
+        android:title="@string/settings"
+        android:visible="false"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/item_Grid"
         android:icon="@drawable/dataset_24"
         android:title="@string/menu_DataSet"
+        android:visible="false"
         app:showAsAction="always" />
 
 
@@ -30,6 +32,7 @@
         android:id="@+id/item_ScanQR"
         android:icon="@drawable/ic_menu_qr"
         android:title="@string/menu_ScanQRCode"
+        android:visible="false"
         app:showAsAction="always" />
 
     <item

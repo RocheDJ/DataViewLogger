@@ -6,7 +6,8 @@ import java.util.UUID
 
 @Parcelize
 data class UserModel (
-    var id          :   String= UUID.randomUUID().toString(),
+    var id          :   String? = UUID.randomUUID().toString(), // allow id to be nullable receiver
+                                                                //https://kotlinlang.org/docs/null-safety.html#nullable-receiver
     var firstName   :   String="",
     var lastName    :   String="",
     var email       :   String="",

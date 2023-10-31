@@ -1,12 +1,9 @@
 package ie.djroche.datalogviewer.helpers
 
-import android.provider.Settings.Global.getString
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
-import com.google.android.material.snackbar.Snackbar
-import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
@@ -40,39 +37,14 @@ fun sendTestRequest(app: MainApp){
   app.httpQueue.add(stringRequest)   // add to the app queue
 }
 
-fun sendReadQRDataRequest(app: MainApp,QRcode :String){
+fun  sendReadQRDataRequest(app: MainApp,QRcode :String){
 // Request a string response from the provided URL.
     var url = app.preferences.getString("Endpoint","http://127.0.0.1")
     url = url + "/read/id"
-    var retValue : String
     val request: StringRequest =
         object : StringRequest(Request.Method.POST, url, object : Response.Listener<String?> {
             override fun onResponse(response: String?) {
-                try {
-                    // on below line we are extracting data from our json object
-                    // and passing our response to our json object.
-                    val jsonObject = JSONObject(response)
-                    val siteKpiData = (jsonObject.getString("data"))
-                    val siteKPIDataJASONArray = JSONArray(siteKpiData)
-                    var  myNewSite : SiteModel = SiteModel(data=mutableListOf<SiteKPIModel>())
-                    myNewSite.description = jsonObject.getString("description")
-                    myNewSite.qrcode = jsonObject.getString("qrcode")
-
-                    for (i in 0 until siteKPIDataJASONArray.length()) {
-                        val valueset = siteKPIDataJASONArray.getJSONObject(i)
-                        myNewSite.data.add(SiteKPIModel(id=valueset.getInt("id"),
-                                                        title=valueset.getString("title"),
-                                                        icon=valueset.getInt("icon"),
-                                                        value=valueset.getDouble("value"),
-                                                    unit=valueset.getString("unit")).copy())
-                    }
-                    // ToDo: Get this done reading data from api
-
-                    // our string to our text view.
-                    retValue = myNewSite.toString()
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
+                processGetSiteByQRResponse(response)
             }
         }, object : Response.ErrorListener {
             override fun onErrorResponse(error: VolleyError?) {
@@ -87,15 +59,46 @@ fun sendReadQRDataRequest(app: MainApp,QRcode :String){
                 // on below line we are passing our key
                 // and value pair to our parameters.
                 params["siteQR"] = QRcode
-
                 return params
             }
         }
 
-
     request.tag=readQRTag
     app.httpQueue.add(request)   // add to the app queue
+
 }
+//--------------------------------------------------------------------------------------------------
+fun processGetSiteByQRResponse(response: String?){
+    try {
+        // on below line we are extracting data from our json object
+        // and passing our response to our json object.
+        val jsonObject = JSONObject(response)
+        val siteKpiData = (jsonObject.getString("data"))
+        val siteKPIDataJASONArray = JSONArray(siteKpiData)
+        var  mySite : SiteModel = SiteModel(data=mutableListOf<SiteKPIModel>())
+        mySite.description = jsonObject.getString("description")
+        mySite.qrcode = jsonObject.getString("qrcode")
+
+        for (i in 0 until siteKPIDataJASONArray.length()) {
+            val valueset = siteKPIDataJASONArray.getJSONObject(i)
+            mySite.data.add(SiteKPIModel(id=valueset.getInt("id"),
+                title=valueset.getString("title"),
+                icon=valueset.getInt("icon"),
+                value=valueset.getDouble("value"),
+                unit=valueset.getString("unit")).copy())
+        }
+
+        // our string to our text view.
+        // ToDo: add return value event here
+    } catch (e: JSONException) {
+        e.printStackTrace()
+    }
+
+}
+
+
+
+
 fun cancelRequests(app: MainApp){
     app.httpQueue?.cancelAll(testTAG)
     app.httpQueue?.cancelAll(readQRTag)
