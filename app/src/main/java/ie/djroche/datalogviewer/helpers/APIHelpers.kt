@@ -83,7 +83,7 @@ fun processGetSiteByQRResponse(response: String?){
             val valueset = siteKPIDataJASONArray.getJSONObject(i)
             mySite.data.add(SiteKPIModel(id=valueset.getInt("id"),
                 title=valueset.getString("title"),
-                icon=valueset.getInt("icon"),
+                icon=valueset.getString("icon"),
                 value=valueset.getDouble("value"),
                 unit=valueset.getString("unit")).copy())
         }

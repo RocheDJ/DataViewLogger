@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
+import ie.djroche.datalogviewer.helpers.MessageBox
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
@@ -28,7 +29,7 @@ class KpiListActivity : AppCompatActivity() {
     lateinit var kpiList: List<SiteKPIModel>
     lateinit var app: MainApp
     var selectedSite = SiteModel()
-
+    var xEdit : Boolean =false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityKpiListBinding.inflate(layoutInflater)
@@ -47,7 +48,7 @@ class KpiListActivity : AppCompatActivity() {
         app = application as MainApp
 
         val strQRCode : String = app.qrCode
-
+        xEdit=false
         //retrieve the information for the site
         try {
             selectedSite = app.sites.findByQR(strQRCode)!!
@@ -71,12 +72,15 @@ class KpiListActivity : AppCompatActivity() {
             Snackbar.make( kpiGRV,kpiList[position].title + R.string._grid_tile_selected, Snackbar.LENGTH_LONG)
                 .show()
         }
+
+
         Timber.i("KPI List Activity started...")
     }
 
     // ------------------   Load the Menu Items  --------------------------
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_kpilist, menu)
+       UpdateMenuIcons()
         return super.onCreateOptionsMenu(menu)
     }
     // -------------------   Process the Click ----------------------------
@@ -86,21 +90,25 @@ class KpiListActivity : AppCompatActivity() {
                 finish()
             }
             R.id.item_Edit-> {
-                binding.etDescription.setTextIsSelectable(true);
-                binding.etDescription.isEnabled = true
-                binding.toolbar.menu.getItem(1).isVisible =false
-                binding.toolbar.menu.getItem(2).isVisible =true
+                xEdit =true
+
+                binding.etDescription.setTextIsSelectable(xEdit);
+                binding.etDescription.isEnabled = xEdit
+                UpdateMenuIcons()
                 Timber.i("Edit site Pressed")
             }
             R.id.item_Done->{
-                binding.etDescription.setTextIsSelectable(false);
-                binding.etDescription.isEnabled = false
-                binding.toolbar.menu.getItem(1).isVisible =true
-                binding.toolbar.menu.getItem(2).isVisible =false
+                xEdit =false
+                binding.etDescription.setTextIsSelectable(xEdit);
+                binding.etDescription.isEnabled = xEdit
+                UpdateMenuIcons()
                 UpdateSiteDescription()
             }
             R.id.item_AddKPI -> {
                 showScanQR()
+            }
+            R.id.item_DeleteSite -> {
+                DeleteSite()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -157,5 +165,39 @@ class KpiListActivity : AppCompatActivity() {
         val kpiAdapter = GridRVAdapter(kpiList = kpiList, this@KpiListActivity)
         kpiGRV.adapter = kpiAdapter
     }
+    // -------------------------------------------------------------------------------------------
+    private fun DeleteSite() {
+        try {
+            MessageBox(this).show(selectedSite.description,
+                getString(R.string.confirm_delete_site)) {
+                    if(it == MessageBox.ResponseType.YES){
+                        app.sites.delete(selectedSite)
+                        Timber.i("Delete Site ")
+                        finish()
+                    }else{
+                        Timber.i("Delete Site Cancelled ")
+                    }
+            }
+        } catch (e: Exception) {
+            Timber.i("DeleteSite Error " + e.message)
+        }
+    }
 
+    // -------------------------------------------------------------------------------------------
+    // show different menu icons depending on user logedd in status
+    private fun UpdateMenuIcons(){
+        if (xEdit){
+            binding.toolbar.menu.getItem(0).isVisible = false// F1 back
+            binding.toolbar.menu.getItem(1).isVisible = false// F2 edit
+            binding.toolbar.menu.getItem(2).isVisible = true// F3 done
+            binding.toolbar.menu.getItem(3).isVisible = true// F4 Add KPI
+            binding.toolbar.menu.getItem(4).isVisible = true// F5 delete
+        } else {
+            binding.toolbar.menu.getItem(0).isVisible = true// F1 back
+            binding.toolbar.menu.getItem(1).isVisible = true// F2 edit
+            binding.toolbar.menu.getItem(2).isVisible = false// F3 done
+            binding.toolbar.menu.getItem(3).isVisible = false// F4 Add KPI
+            binding.toolbar.menu.getItem(4).isVisible = false// F5 delete
+        }
+    }
 }

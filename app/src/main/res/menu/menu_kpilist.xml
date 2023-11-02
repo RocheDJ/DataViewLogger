@@ -26,4 +26,11 @@
         android:title="@string/add_kpi"
         app:showAsAction="always"
         android:visible="true"/>
+
+    <item
+        android:id="@+id/item_DeleteSite"
+        android:icon="@drawable/delete_24"
+        android:title="@string/delete_site"
+        app:showAsAction="always"
+        android:visible="true"/>
 </menu>

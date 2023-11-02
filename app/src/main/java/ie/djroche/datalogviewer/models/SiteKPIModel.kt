@@ -5,13 +5,13 @@ import android.os.Parcelable
 import ie.djroche.datalogviewer.R
 import kotlinx.parcelize.Parcelize
 
-private val defaultImage =(R.drawable.industry40);
+private val defaultImage = "industry40.png";
 //Data Model to hold Key Performance Indicators
 @Parcelize
 data class SiteKPIModel(
     val id      :   Int     =   0,
     val title   :   String  =   "",
-    val icon    :   Int     =   defaultImage,
+    val icon    :   String     =   defaultImage,
     val value   :   Double  =   0.0,
     val unit    :   String  =   "-"
 ): Parcelable

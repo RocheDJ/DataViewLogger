@@ -50,32 +50,32 @@ fun loadDummyJSONSiteData(context: Context,userID :String) {
     try {
         // create the site data for 1st site
         myNewSite.description = "Homer Site 001"
-        myNewSite.data.add(SiteKPIModel(1, "Temperature", R.drawable.temp, 23.4, "Deg C").copy())
-        myNewSite.data.add(SiteKPIModel(1, "Conductivity", R.drawable.conductivity, 50.5, "%").copy())
+        myNewSite.data.add(SiteKPIModel(1, "Temperature", "temp.png", 23.4, "Deg C").copy())
+        myNewSite.data.add(SiteKPIModel(1, "Conductivity", "conductivity.png", 50.5, "%").copy())
         myNewSite.data.add(
             SiteKPIModel(
                 2,
                 "Motor RPM",
-                R.drawable.speedometer,
+               "speedometer.png",
                 800.0,
                 "RPM"
             ).copy()
         )
-        myNewSite.data.add(SiteKPIModel(3, "Valve Status", R.drawable.valve, 0.0, "OFF").copy())
-        myNewSite.data.add(SiteKPIModel(4, "Flow Rate", R.drawable.flow, 125.0, "L/m").copy())
-        myNewSite.data.add(SiteKPIModel(5, "Tank Level", R.drawable.tank, 65.0, "%").copy())
+        myNewSite.data.add(SiteKPIModel(3, "Valve Status", "valve.png", 0.0, "OFF").copy())
+        myNewSite.data.add(SiteKPIModel(4, "Flow Rate", "flow.png", 125.0, "L/m").copy())
+        myNewSite.data.add(SiteKPIModel(5, "Tank Level", "tank.png", 65.0, "%").copy())
         myNewSite.qrcode = "QR-000006-000001"
         myNewSite.userid = userID
         dummySites.add(myNewSite.copy())
 
         // create the site data for 2nd site
         myNewSite1.description = "Homer Site 002"
-        myNewSite1.data.add(SiteKPIModel(3, "Temperature", R.drawable.temp, 13.4, "Deg C").copy())
+        myNewSite1.data.add(SiteKPIModel(3, "Temperature", "temp.png", 13.4, "Deg C").copy())
         myNewSite1.data.add(
             SiteKPIModel(
                 4,
                 "Motor RPM",
-                R.drawable.speedometer,
+                "speedometer.png",
                 100.0,
                 "RPM"
             ).copy()

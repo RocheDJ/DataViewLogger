@@ -54,4 +54,8 @@ Get API requests [volly](https://google.github.io/volley/simple.html)
 
 Post API requests [volly](https://www.geeksforgeeks.org/android-update-data-in-api-using-volley-with-kotlin/)
 
+Alert dialogue [Geeks for Geeks](https://www.geeksforgeeks.org/how-to-create-a-custom-yes-no-dialog-in-android-with-kotlin/)
+
+Show or Hide Keyboard [[Geeks for Geeks]](https://www.geeksforgeeks.org/how-to-close-or-hide-android-soft-keyboard-with-kotlin/)
+
   

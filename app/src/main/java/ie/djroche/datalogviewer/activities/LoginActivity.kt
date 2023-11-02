@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -70,39 +71,46 @@ class LoginActivity : AppCompatActivity() {
     try {
         val userEmail = binding.username.text.toString()
         var localUser: UserModel? = null
-        localUser = app.users.findUserByEmail(userEmail)
 
-        // hide the keyboard when we click the button
-        // ref: https://www.geeksforgeeks.org/how-to-close-or-hide-android-soft-keyboard-with-kotlin/
+        //Hide Keyboard  ref: https://www.geeksforgeeks.org/how-to-close-or-hide-android-soft-keyboard-with-kotlin/
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            // on below line hiding our keyboard.
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0)
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0)
 
-        if (localUser != null){
-            user = localUser.copy()
-            val checkPassword = binding.password.text.toString()
-            if (checkPassword.length > 3) {
-                val checkResult = ValidateUser(user!!, checkPassword)
-                if (checkResult == 0) {
-                    app.user = user!!.copy()
-                    setResult(RESULT_OK)
-                    finish()
-                } else {
-                    Snackbar.make(view,
-                        getString(R.string.enter_valid_username_password), Snackbar.LENGTH_LONG)
-                        .show()
+        //check if the email is valid
+        if (Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()){
+            localUser = app.users.findUserByEmail(userEmail)
+            if (localUser != null){
+                user = localUser.copy()
+                val checkPassword = binding.password.text.toString()
+                if (checkPassword.length > 3) {
+                    val checkResult = ValidateUser(user!!, checkPassword)
+                    if (checkResult == 0) {
+                        app.user = user!!.copy()
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        Snackbar.make(view,
+                            getString(R.string.enter_valid_username_password), Snackbar.LENGTH_LONG)
+                            .show()
+                    }
                 }
-            }
-        } else{
-            //ToDo: add option to register user
-            Snackbar.make(view,
+            } else{
+                //ToDo: add option to register user
+                Snackbar.make(view,
                     getString(R.string.user_name_not_found), Snackbar.LENGTH_LONG)
                     .show()
+            }
+        } else {
+            Snackbar.make(view,
+                getString(R.string.email_not_valid), Snackbar.LENGTH_LONG)
+                .show()
         }
+
     } catch (e: Exception) {
         Timber.i("SignInPressed ERROR" + e.message)
     }
 }
+
 
 }//-------------Class end -------------------------------------------------------------------------

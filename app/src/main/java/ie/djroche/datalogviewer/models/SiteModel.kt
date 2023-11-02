@@ -6,7 +6,7 @@ import java.util.UUID
 @Parcelize
 data class SiteModel(
     var id              : String =  UUID.randomUUID().toString(),
-    var qrcode          : String = "",
+    var qrcode          : String = UUID.randomUUID().toString(),
     var description     : String = "",
     var updated         : Int    = 0,
     var modelVersion    : Int    = 1,

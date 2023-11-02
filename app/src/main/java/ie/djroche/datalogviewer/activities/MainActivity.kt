@@ -17,6 +17,7 @@ import ie.djroche.datalogviewer.helpers.cancelRequests
 import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
 
 import ie.djroche.datalogviewer.main.MainApp
+import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
 //------------------------------------------------------------------------------------------------
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             R.id.item_LogOut->{
                 LogOut()
             }
+            //new Site
+            R.id.item_AddSite->{
+                AddSite()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -87,6 +92,13 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     override fun onStop() {
         super.onStop()
         cancelRequests(app) // cancel all outstanding HTTP requests
+    }
+    // --------------------------------------------------------------------------------------------
+    override fun onBackPressed() {
+        // only press back if logged in
+        if (app.userLoggedIn){
+            super.onBackPressed()
+        }
     }
     // --------------------------------------------------------------------------------------------
     private fun showLogin() {
@@ -142,8 +154,8 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0,app.sites.findAll().size)
+                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.sites.findAllForUser(app.user.id.toString()).size)
+               // notifyItemRangeChanged(0,app.sites.findAll().size)
             }
         }
     // --------------------------------------------------------------------------------------------
@@ -192,12 +204,23 @@ class MainActivity : AppCompatActivity(), SiteListener  {
 
     // --------------------------------------------------------------------------------------------
     private fun ShowSites(){
-        binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
+        //
+        //binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
+        binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAllForUser(app.user.id.toString()),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun HideSites(){
         // hide sites
         binding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
+    }
+    // --------------------------------------------------------------------------------------------
+    private fun AddSite(){
+        var myNewSite: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
+        myNewSite.description= "New Site"
+        myNewSite.userid = app.user.id.toString()
+        myNewSite.data.add(SiteKPIModel())
+        app.sites.create(myNewSite.copy())
+        ShowSites()
     }
     //---------------------------------------------------------------------------------------------
     // show different menu icons depending on user logedd in status
@@ -209,7 +232,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             binding.toolbar.menu.getItem(3).isVisible =false// F4 QR scan
             binding.toolbar.menu.getItem(4).isVisible =true// F5 logion
             binding.toolbar.menu.getItem(5).isVisible =false // F6 logout
-
+            binding.toolbar.menu.getItem(6).isVisible =false // F7 add site
         } else {
             binding.toolbar.menu.getItem(0).isVisible =false// F1 test
             binding.toolbar.menu.getItem(1).isVisible =true// F2 Settings
@@ -217,11 +240,8 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             binding.toolbar.menu.getItem(3).isVisible =true// F4 QR scan
             binding.toolbar.menu.getItem(4).isVisible =false// F5 logion
             binding.toolbar.menu.getItem(5).isVisible =true // F6 logout
+            binding.toolbar.menu.getItem(6).isVisible =true // F7 add site
         }
-
-
     }
-
-
 } // ------------------------------END Of Class ---------------------------------------------------
 

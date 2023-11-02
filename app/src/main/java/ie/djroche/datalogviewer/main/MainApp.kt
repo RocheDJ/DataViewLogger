@@ -31,14 +31,15 @@ class MainApp : Application()  {
         get() = xLoggedin
         set(value) {
             if (value ==true){
+                SaveCurrentUser()
                 LoadSitesForCurrentUser()
                 xLoggedin =true
             } else
             {
-                //todo: Disassoicate all sites
                 xLoggedin =false
+                user.id = null
+                LoadSitesForCurrentUser()
             }
-
         }
 
     var qrCode : String = ""
@@ -59,24 +60,30 @@ class MainApp : Application()  {
         } else {
             // if no user defined use a defalt user
             user = users.findUserByEmail("homer@simpson.com")!!
-            var editor = preferences.edit()
-            if (user.id != null) {
-                editor.putString("UserID",user.id.toString())
-            }
-            editor.commit()
+            SaveCurrentUser()
         }
         LoadSitesForCurrentUser()
         // create the http queue
         httpQueue = Volley.newRequestQueue(this)
         i("DataLogViewer started")
     }
+//-------- load sites for active user ------------------------------------------------------------
 
     fun LoadSitesForCurrentUser(){
      // load the sites for the user
         if (user.id != null) {
             sites = SiteJSONStore(applicationContext,user.id.toString())
+
+        } else {
+            sites = SiteJSONStore(applicationContext,"-")
         }
     }
-//-------- load sites for active user ------------------------------------------------------------
 
+    fun SaveCurrentUser(){
+        var editor = preferences.edit()
+        if (user.id != null) {
+            editor.putString("UserID",user.id.toString())
+        }
+        editor.commit()
+    }
 } // ------------------------------END Of Class ---------------------------------------------------

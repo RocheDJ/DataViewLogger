@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import ie.djroche.datalogviewer.R
+import ie.djroche.datalogviewer.helpers.assetsToBitmap
 import ie.djroche.datalogviewer.models.SiteKPIModel
 
 internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
@@ -36,8 +37,6 @@ internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
         return 0
     }
 
-
-
     // get individual item of grid view.
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var convertView = convertView
@@ -61,7 +60,10 @@ internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
         unitTV = convertView!!.findViewById(R.id.idTVUnit)
         iconIV = convertView!!.findViewById(R.id.idIVIcon)
         // setting image view.
-        iconIV.setImageResource(kpiList.get(position).icon)
+        var assetFilename = kpiList.get(position).icon
+        val myBitmap = assetFilename.assetsToBitmap(context)
+        iconIV.setImageBitmap(myBitmap)
+       // iconIV.setImageResource(kpiList.get(position).icon)
         // set title.
         titleTV.setText(kpiList.get(position).title)
         //set unit

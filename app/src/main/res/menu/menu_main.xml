@@ -48,4 +48,11 @@
         android:title="@string/menu_logout"
         app:showAsAction="always"
         android:visible="false"/>
+
+    <item
+        android:id="@+id/item_AddSite"
+        android:icon="@drawable/ic_add_24"
+        android:title="@string/add_Site"
+        app:showAsAction="always"
+        android:visible="true"/>
 </menu>

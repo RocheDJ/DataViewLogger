@@ -18,6 +18,10 @@ class SiteWEBStore(private val context: Context) : SiteStore {
         TODO("Not yet implemented need to have validated KEY for Server")
     }
 
+    override fun findAllForUser(userID: String): List<SiteModel> {
+        TODO("Not yet implemented")
+    }
+
     override fun find(siteID: String): SiteModel? {
         TODO("Not yet implemented")
     }
@@ -27,6 +31,10 @@ class SiteWEBStore(private val context: Context) : SiteStore {
     }
 
     override fun create(site: SiteModel): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun delete(site: SiteModel) {
         TODO("Not yet implemented")
     }
 

@@ -35,6 +35,17 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
         return sites
     }
 
+    override fun findAllForUser(userID: String): List<SiteModel> {
+        var foundSites = mutableListOf<SiteModel>()
+        // manual search
+        for (site in sites) {
+            if (site.userid == userID) {
+                foundSites.add(site)
+            }
+        }
+        return foundSites
+    }
+
     override fun find(siteID: String): SiteModel? {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         return foundSite
@@ -47,9 +58,14 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
 
 
     override fun create(site: SiteModel): String {
-        sites.add(site.copy())
+        sites.add(site)
         serialize()
         return site.id
+    }
+
+    override fun delete(site: SiteModel) {
+        sites.remove(site)
+        serialize()
     }
 
     override fun getkpi(siteID: String): MutableList<SiteKPIModel>? {

@@ -47,4 +47,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="settings">Settings</string>
+    <string name="delete_site">Delete Site</string>
+    <string name="confirm_delete_site">Are you Sure you want to Delete this Site</string>
+    <string name="email_not_valid">Email Address Not Valid</string>
+    <string name="add_Site">Add Site</string>
 </resources>
