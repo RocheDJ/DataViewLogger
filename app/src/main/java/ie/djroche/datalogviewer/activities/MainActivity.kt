@@ -95,10 +95,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     }
     // --------------------------------------------------------------------------------------------
     override fun onBackPressed() {
-        // only press back if logged in
-        if (app.userLoggedIn){
-            super.onBackPressed()
-        }
+        // No Pressing Back allowed
     }
     // --------------------------------------------------------------------------------------------
     private fun showLogin() {
