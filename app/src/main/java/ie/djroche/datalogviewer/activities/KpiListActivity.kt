@@ -69,7 +69,7 @@ class KpiListActivity : AppCompatActivity() {
         // click listener for our grid view.
         kpiGRV.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             //ToDo: add action for grid item click
-            Snackbar.make( kpiGRV,kpiList[position].title + R.string._grid_tile_selected, Snackbar.LENGTH_LONG)
+            Snackbar.make( kpiGRV,kpiList[position].title + R.string._grid_tile_selected.toString(), Snackbar.LENGTH_LONG)
                 .show()
         }
 

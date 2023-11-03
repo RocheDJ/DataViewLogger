@@ -59,6 +59,11 @@ class UserJSONStore( private val context: Context):UserStore
         return user.id.toString()
     }
 
+    override fun delete(user: UserModel) {
+        users.remove(user)
+        serialize()
+    }
+
     //convert user Data to JSON and save
     private fun serialize() {
         val jsonString = gsonBuilder.toJson(users, listType)

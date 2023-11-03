@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
 }
-
 android {
     namespace = "ie.djroche.datalogviewer"
     compileSdk = 33
@@ -39,7 +38,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -48,11 +46,9 @@ dependencies {
     implementation("androidx.annotation:annotation:1.6.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    testImplementation("junit:junit:4.13.2")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.ajalt:timberkt:1.5.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
     //barcode
     implementation("com.google.android.gms:play-services-vision:20.1.3")
     // google JSON To Object converter
@@ -61,5 +57,10 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     // settings
     implementation("androidx.preference:preference-ktx:1.2.0")
-
+    implementation("androidx.test:monitor:1.6.1")
+    implementation("androidx.test:core-ktx:1.5.0")
+    // Required -- JUnit 4 framework
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

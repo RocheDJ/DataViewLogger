@@ -51,4 +51,5 @@
     <string name="confirm_delete_site">Are you Sure you want to Delete this Site</string>
     <string name="email_not_valid">Email Address Not Valid</string>
     <string name="add_Site">Add Site</string>
+    <string name="site_not_valid_or_different_user">Site QR not Valid or not assugned to User.</string>
 </resources>

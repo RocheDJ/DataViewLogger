@@ -9,6 +9,7 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteListener
@@ -174,7 +175,16 @@ class MainActivity : AppCompatActivity(), SiteListener  {
                 Timber.i("QR Scan Returned OK")
                 //ToDo: Validate the QR Code
                 if  (app.qrCode != "-"){
-                    showGrid()
+                    // check if scanned site is found or if it is found for that user
+                    var scannedSite = app.sites.findByQR(app.qrCode)!!
+
+                    if (scannedSite.userid == app.user.id){
+                        showGrid()
+                    } else {
+                        Snackbar.make( binding.root,R.string.site_not_valid_or_different_user, Snackbar.LENGTH_LONG)
+                            .show()
+                    }
+
                 }
             }
         }

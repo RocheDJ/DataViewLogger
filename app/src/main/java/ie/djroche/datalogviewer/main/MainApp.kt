@@ -5,16 +5,14 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-
 import ie.djroche.datalogviewer.models.SiteJSONStore
 import ie.djroche.datalogviewer.models.SiteStore
-import ie.djroche.datalogviewer.models.SiteWEBStore
 import ie.djroche.datalogviewer.models.UserJSONStore
 import ie.djroche.datalogviewer.models.UserModel
 import ie.djroche.datalogviewer.models.UserStore
 import timber.log.Timber
 import timber.log.Timber.Forest.i
-import kotlin.properties.Delegates
+
 //-------------------------------------------------------------------------------------------------
 class MainApp : Application()  {
     //--------------------------------------------------------------------------------------------

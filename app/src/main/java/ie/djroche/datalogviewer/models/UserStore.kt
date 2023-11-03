@@ -6,4 +6,5 @@ interface UserStore {
     fun findUserById(userID: String): UserModel?
     fun findUserByEmail(eMail:String):UserModel?
     fun create(user: UserModel):String
+    fun delete(user: UserModel)
 }
