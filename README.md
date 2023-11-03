@@ -47,7 +47,7 @@ a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-scr
 - Adding Automated test scripts [Kotlin Ref](https://kotlinlang.org/docs/jvm-test-using-junit.html#add-dependencies)
                                 [Android Studio](https://developer.android.com/training/testing/local-tests)
                                 [Testing like a true green droid](https://www.toptal.com/android/testing-like-a-true-green-droid)  
-                                [Unint Test Acess to App context](https://code.luasoftware.com/tutorials/android/android-instrumented-unit-test-access-application-context
+                                [Unit Test Access to App context](https://code.luasoftware.com/tutorials/android/android-instrumented-unit-test-access-application-context)
 - 
 - Adding a settings configuration
     [Android Developer](https://developer.android.com/develop/ui/views/components/settings#kts)
