@@ -31,6 +31,7 @@ On a walk around an operator logged into the app can scan a QR code attached to 
 The key metrics from the instruments associated with that piece of equipment would then be shown on the app.  
 
 ---
+
 ## References
 
 - IOT Icons downloaded from [Flat-icon](https://www.flaticon.com/free-icons/iot)
@@ -45,10 +46,13 @@ The key metrics from the instruments associated with that piece of equipment wou
 a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-screen-in-android-3bd9552b92a5)
 
 - Adding Automated test scripts [Kotlin Ref](https://kotlinlang.org/docs/jvm-test-using-junit.html#add-dependencies)
-                                [Android Studio](https://developer.android.com/training/testing/local-tests)
-                                [Testing like a true green droid](https://www.toptal.com/android/testing-like-a-true-green-droid)  
-                                [Unit Test Access to App context](https://code.luasoftware.com/tutorials/android/android-instrumented-unit-test-access-application-context)
-- 
+
+- [Android Studio](https://developer.android.com/training/testing/local-tests)
+
+- [Testing like a true green droid](https://www.toptal.com/android/testing-like-a-true-green-droid)  
+
+- [Unit Test Access to App context](https://code.luasoftware.com/tutorials/android/android-instrumented-unit-test-access-application-context)
+
 - Adding a settings configuration
     [Android Developer](https://developer.android.com/develop/ui/views/components/settings#kts)
     Note for API request had to use android:usesCleartextTraffic="true" in manifest
