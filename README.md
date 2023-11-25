@@ -1,4 +1,4 @@
-# SETU HDip Computer Science  Mobile Development Assignment 01
+# SETU HDip Computer Science  Mobile Development Assignment 02
 
 ![version](https://img.shields.io/badge/version-0.01.23307-blue.svg) 
 
@@ -29,6 +29,22 @@
 Based around a large industrial site or number of remote sites. On these sites, key pieces of equipment have metrics recorded,  hours running, temperature tank level etc. 
 On a walk around an operator logged into the app can scan a QR code attached to that piece of equipment.  
 The key metrics from the instruments associated with that piece of equipment would then be shown on the app.  
+
+---
+
+## UML and Class Diagrams
+
+---
+
+## UX /DX Approach Adopted
+
+---
+
+## Git Approach
+
+---
+
+## Personal Statement
 
 ---
 
@@ -65,7 +81,3 @@ a Splash screen in android Kotlin  [Medium](https://proandroiddev.com/splash-scr
 * Get API requests [volly](https://google.github.io/volley/simple.html)
 
 * Post API requests [volly](https://www.geeksforgeeks.org/android-update-data-in-api-using-volley-with-kotlin/)
-
-
-
-  
