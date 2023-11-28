@@ -7,8 +7,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
@@ -22,9 +26,14 @@ import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
 //------------------------------------------------------------------------------------------------
-class MainActivity : AppCompatActivity(), SiteListener  {
+class MainActivity : AppCompatActivity(), SiteListener ,
+    NavigationView.OnNavigationItemSelectedListener  {
     private lateinit var binding: ActivityMainBinding
     lateinit var app: MainApp
+
+    lateinit var drawerLayout: DrawerLayout
+    lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+    lateinit var navView: NavigationView
     // -------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +50,28 @@ class MainActivity : AppCompatActivity(), SiteListener  {
 
         // launch and bind the recycler view
         val layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
+       binding.recyclerView.layoutManager = layoutManager
         if (app.userLoggedIn == true ){
             ShowSites()
         }
+        // REf: https://www.geeksforgeeks.org/navigation-drawer-in-android/
+        // drawer layout instance to toggle the menu icon to open
+        // drawer and back button to close drawer
+        drawerLayout = findViewById(R.id.my_drawer_layout)
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close)
+
+        // pass the Open and Close toggle for the drawer layout listener
+        // to toggle the button
+        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+        actionBarDrawerToggle.syncState()
+        // to make the Navigation drawer icon always appear on the action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //set nav view  and listener
+        navView = findViewById(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
+
+
         Timber.i("Main Activity started...")
     }
     // ------------------   Load the Menu Items  -------------------------------------------------
@@ -55,40 +82,62 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     }
     // ------------------   Process the Menu Items events  ---------------------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            // General Help function  for testing
-            R.id.item_F1->{
-                //sendTestRequest(app)
-                sendReadQRDataRequest(app,"QR-000006-000003")
-            }
-            //scan QR code
-            R.id.item_ScanQR -> {
-                showScanQR()
-            }
-            // show all items in grid
-            R.id.item_Grid ->{
-               showGrid()
-            }
-            //load settings
-            R.id.item_settings->{
-                showSettings()
-            }
-            // Log in
-            R.id.item_LogIn->{
-                showLogin()
-            }
+        return if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            true
+        } else {
+            when (item.itemId) {
+                // General Help function  for testing
+                R.id.item_F1 -> {
+                    //sendTestRequest(app)
+                    sendReadQRDataRequest(app, "QR-000006-000003")
+                }
+                //scan QR code
+                R.id.item_ScanQR -> {
+                    showScanQR()
+                }
+                // show all items in grid
+                R.id.item_Grid -> {
+                    showGrid()
+                }
+                //load settings
+                R.id.item_settings -> {
+                    showSettings()
+                }
+                // Log in
+                R.id.item_LogIn -> {
+                    showLogin()
+                }
 
-            // Log out
-            R.id.item_LogOut->{
-                LogOut()
+                // Log out
+                R.id.item_LogOut -> {
+                    LogOut()
+                }
+                //new Site
+                R.id.item_AddSite -> {
+                    AddSite()
+                }
             }
-            //new Site
-            R.id.item_AddSite->{
-                AddSite()
+            return super.onOptionsItemSelected(item)
+        }
+    }
+    // -------------------------------------------------------------------------------------------
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_settings -> {
+                Timber.i( "nav_settings clicked")
+            }
+            R.id.nav_logout -> {
+                Timber.i( "nav_logout clicked")
+            }
+            R.id.nav_login -> {
+                Timber.i("nav_login clicked")
             }
         }
-        return super.onOptionsItemSelected(item)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
+
+
     // -------------------------------------------------------------------------------------------
     override fun onStop() {
         super.onStop()
@@ -110,7 +159,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
         Timber.i("LogOut selected")
         app.userLoggedIn =false
         HideSites()
-        UpdateMainMenuIcons()
+        // test nav -UpdateMainMenuIcons()
     }
     // --------------------------------------------------------------------------------------------
     private fun showGrid() {
@@ -152,7 +201,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.sites.findAllForUser(app.user.id.toString()).size)
+               (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.sites.findAllForUser(app.user.id.toString()).size)
                // notifyItemRangeChanged(0,app.sites.findAll().size)
             }
         }
@@ -218,7 +267,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     // --------------------------------------------------------------------------------------------
     private fun HideSites(){
         // hide sites
-        binding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
+       binding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun AddSite(){
@@ -231,7 +280,8 @@ class MainActivity : AppCompatActivity(), SiteListener  {
     }
     //---------------------------------------------------------------------------------------------
     // show different menu icons depending on user logedd in status
-    private fun UpdateMainMenuIcons(){
+    // test nav -
+   private fun UpdateMainMenuIcons(){
         if (app.userLoggedIn != true){
             binding.toolbar.menu.getItem(0).isVisible =false// F1 test
             binding.toolbar.menu.getItem(1).isVisible =false// F2 Settings
@@ -250,5 +300,7 @@ class MainActivity : AppCompatActivity(), SiteListener  {
             binding.toolbar.menu.getItem(6).isVisible =true // F7 add site
         }
     }
+
+
 } // ------------------------------END Of Class ---------------------------------------------------
 

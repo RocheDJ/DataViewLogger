@@ -52,4 +52,8 @@
     <string name="email_not_valid">Email Address Not Valid</string>
     <string name="add_Site">Add Site</string>
     <string name="site_not_valid_or_different_user">Site QR not Valid or not assugned to User.</string>
+    <string name="home">Home</string>
+    <!-- Navigation -->
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
 </resources>
