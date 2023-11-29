@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+    <item android:title="General">
+        <menu>
+            <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/baseline_home_24"
+                android:title="Home" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_button_gear"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_addSite"
+                android:icon="@drawable/ic_add_24"
+                android:title="@string/add_Site" />
+        </menu>
+    </item>
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/nav_account"
+                android:icon="@drawable/ic_launcher_foreground"
+                android:title="My Account" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_logout"
+                android:title="Logout" />
+            <item
+                android:id="@+id/nav_login"
+                android:icon="@drawable/ic_menu_login"
+                android:title="LogIn" />
+        </menu>
+    </item>
+</menu>

@@ -56,4 +56,5 @@
     <!-- Navigation -->
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <string name="data_log_viewer">Data Log Viewer</string>
 </resources>

@@ -18,6 +18,7 @@ import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteListener
 import ie.djroche.datalogviewer.databinding.ActivityMainBinding
+import ie.djroche.datalogviewer.databinding.NavHeaderBinding
 import ie.djroche.datalogviewer.helpers.cancelRequests
 import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
 
@@ -28,32 +29,36 @@ import timber.log.Timber
 //------------------------------------------------------------------------------------------------
 class MainActivity : AppCompatActivity(), SiteListener ,
     NavigationView.OnNavigationItemSelectedListener  {
-    private lateinit var binding: ActivityMainBinding
-    lateinit var app: MainApp
 
+    lateinit var app: MainApp
+    private lateinit var acMainBinding: ActivityMainBinding
     lateinit var drawerLayout: DrawerLayout
-    lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     lateinit var navView: NavigationView
+
+    lateinit var navViewHeaderBinding: NavHeaderBinding
+    lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+
     // -------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        acMainBinding = ActivityMainBinding.inflate(layoutInflater)
         //set toolbar contents
-        binding.toolbar.title = title
-        setSupportActionBar(binding.toolbar)
+        acMainBinding.toolbar.title = title
+        setSupportActionBar(acMainBinding.toolbar)
 
         // bind the activity View
-        setContentView(binding.root)
+        setContentView(acMainBinding.root)
 
         //launch the main app
         app = application as MainApp
 
         // launch and bind the recycler view
         val layoutManager = LinearLayoutManager(this)
-       binding.recyclerView.layoutManager = layoutManager
+        acMainBinding.recyclerView.layoutManager = layoutManager
         if (app.userLoggedIn == true ){
             ShowSites()
         }
+
         // REf: https://www.geeksforgeeks.org/navigation-drawer-in-android/
         // drawer layout instance to toggle the menu icon to open
         // drawer and back button to close drawer
@@ -67,10 +72,20 @@ class MainActivity : AppCompatActivity(), SiteListener ,
         // to make the Navigation drawer icon always appear on the action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
         //set nav view  and listener
         navView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
 
+        // get binding for the header view Ref: https://stackoverflow.com/questions/33962548/how-to-data-bind-to-a-header
+        val viewHeader = acMainBinding.navView.getHeaderView(0)
+        navViewHeaderBinding = viewHeader.let { NavHeaderBinding.bind(it) }
+
+        // add binding for Floating Action Button
+        acMainBinding.fab.setOnClickListener {
+            Timber.i("FAB Clicked")
+            showScanQR()
+        }
 
         Timber.i("Main Activity started...")
     }
@@ -80,9 +95,17 @@ class MainActivity : AppCompatActivity(), SiteListener ,
         UpdateMainMenuIcons()
         return super.onCreateOptionsMenu(menu)
     }
+    // -------------------- Update Nav   Drawer header Text --------------------------------------
+    private fun UpdateNavHeader(){
+        // Update the data on the nave drawer header
+        val userText : String = getString(R.string.user_name) + app.user.firstName + " "+ app.user.lastName
+        navViewHeaderBinding.tvUser.text = userText
+        navViewHeaderBinding.tvTitle.text =getString(R.string.app_name)
+    }
     // ------------------   Process the Menu Items events  ---------------------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            UpdateNavHeader()
             true
         } else {
             when (item.itemId) {
@@ -125,12 +148,19 @@ class MainActivity : AppCompatActivity(), SiteListener ,
         when (item.itemId) {
             R.id.nav_settings -> {
                 Timber.i( "nav_settings clicked")
+                showSettings()
             }
             R.id.nav_logout -> {
                 Timber.i( "nav_logout clicked")
+                LogOut()
             }
             R.id.nav_login -> {
                 Timber.i("nav_login clicked")
+                showLogin()
+            }
+            R.id.nav_addSite ->{
+                Timber.i("nav_addSite clicked")
+                AddSite()
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -146,6 +176,13 @@ class MainActivity : AppCompatActivity(), SiteListener ,
     // --------------------------------------------------------------------------------------------
     override fun onBackPressed() {
         // No Pressing Back allowed
+    }
+    //---------------------------------------------------------------------------------------------
+    override fun onRestart() {
+        val userText : String = getString(R.string.user_name) + app.user.firstName + " "+ app.user.lastName
+        navViewHeaderBinding.tvUser.text = userText
+        navViewHeaderBinding.tvTitle.text =getString(R.string.app_name)
+        super.onRestart()
     }
     // --------------------------------------------------------------------------------------------
     private fun showLogin() {
@@ -201,7 +238,7 @@ class MainActivity : AppCompatActivity(), SiteListener ,
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-               (binding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.sites.findAllForUser(app.user.id.toString()).size)
+               (acMainBinding.recyclerView.adapter)?.notifyItemRangeChanged(0,app.sites.findAllForUser(app.user.id.toString()).size)
                // notifyItemRangeChanged(0,app.sites.findAll().size)
             }
         }
@@ -230,7 +267,7 @@ class MainActivity : AppCompatActivity(), SiteListener ,
                     if (scannedSite.userid == app.user.id){
                         showGrid()
                     } else {
-                        Snackbar.make( binding.root,R.string.site_not_valid_or_different_user, Snackbar.LENGTH_LONG)
+                        Snackbar.make( acMainBinding.root,R.string.site_not_valid_or_different_user, Snackbar.LENGTH_LONG)
                             .show()
                     }
 
@@ -262,12 +299,12 @@ class MainActivity : AppCompatActivity(), SiteListener ,
     private fun ShowSites(){
         //
         //binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
-        binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAllForUser(app.user.id.toString()),this)
+        acMainBinding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAllForUser(app.user.id.toString()),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun HideSites(){
         // hide sites
-       binding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
+       acMainBinding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun AddSite(){
@@ -283,21 +320,21 @@ class MainActivity : AppCompatActivity(), SiteListener ,
     // test nav -
    private fun UpdateMainMenuIcons(){
         if (app.userLoggedIn != true){
-            binding.toolbar.menu.getItem(0).isVisible =false// F1 test
-            binding.toolbar.menu.getItem(1).isVisible =false// F2 Settings
-            binding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
-            binding.toolbar.menu.getItem(3).isVisible =false// F4 QR scan
-            binding.toolbar.menu.getItem(4).isVisible =true// F5 logion
-            binding.toolbar.menu.getItem(5).isVisible =false // F6 logout
-            binding.toolbar.menu.getItem(6).isVisible =false // F7 add site
+            acMainBinding.toolbar.menu.getItem(0).isVisible =false// F1 test
+            acMainBinding.toolbar.menu.getItem(1).isVisible =false// F2 Settings
+            acMainBinding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
+            acMainBinding.toolbar.menu.getItem(3).isVisible =false// F4 QR scan
+            acMainBinding.toolbar.menu.getItem(4).isVisible =true// F5 logion
+            acMainBinding.toolbar.menu.getItem(5).isVisible =false // F6 logout
+            acMainBinding.toolbar.menu.getItem(6).isVisible =false // F7 add site
         } else {
-            binding.toolbar.menu.getItem(0).isVisible =false// F1 test
-            binding.toolbar.menu.getItem(1).isVisible =true// F2 Settings
-            binding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
-            binding.toolbar.menu.getItem(3).isVisible =true// F4 QR scan
-            binding.toolbar.menu.getItem(4).isVisible =false// F5 logion
-            binding.toolbar.menu.getItem(5).isVisible =true // F6 logout
-            binding.toolbar.menu.getItem(6).isVisible =true // F7 add site
+            acMainBinding.toolbar.menu.getItem(0).isVisible =false// F1 test
+            acMainBinding.toolbar.menu.getItem(1).isVisible =true// F2 Settings
+            acMainBinding.toolbar.menu.getItem(2).isVisible =false// F3 Test grid
+            acMainBinding.toolbar.menu.getItem(3).isVisible =true// F4 QR scan
+            acMainBinding.toolbar.menu.getItem(4).isVisible =false// F5 logion
+            acMainBinding.toolbar.menu.getItem(5).isVisible =true // F6 logout
+            acMainBinding.toolbar.menu.getItem(6).isVisible =true // F7 add site
         }
     }
 
