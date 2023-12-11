@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(), SiteListener ,
     private lateinit var acMainBinding: ActivityMainBinding
     lateinit var drawerLayout: DrawerLayout
     lateinit var navView: NavigationView
-
     lateinit var navViewHeaderBinding: NavHeaderBinding
     lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
