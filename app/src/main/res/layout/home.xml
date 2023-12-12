@@ -16,9 +16,6 @@
     <!-- End of app bar  and start of main page core view -->
 
 
-    <!-- ToDo: add main page core view -->
-
-    <include layout="@layout/content_home" />
 
     <!-- End of main page core view and start of drawer information -->
     <!-- this the navigation view which draws and shows the navigation drawer -->

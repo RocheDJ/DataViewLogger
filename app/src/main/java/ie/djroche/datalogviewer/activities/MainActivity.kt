@@ -79,13 +79,13 @@ class MainActivity : AppCompatActivity(), SiteListener ,
         // get binding for the header view Ref: https://stackoverflow.com/questions/33962548/how-to-data-bind-to-a-header
         val viewHeader = acMainBinding.navView.getHeaderView(0)
         navViewHeaderBinding = viewHeader.let { NavHeaderBinding.bind(it) }
-
+/*
         // add binding for Floating Action Button
         acMainBinding.fab.setOnClickListener {
             Timber.i("FAB Clicked")
             showScanQR()
         }
-
+*/
         Timber.i("Main Activity started...")
     }
     // ------------------   Load the Menu Items  -------------------------------------------------

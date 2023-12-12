@@ -23,5 +23,7 @@
         app:titleTextColor="@color/colorPrimary" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Main page core view -->
+    <include layout="@layout/content_home" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

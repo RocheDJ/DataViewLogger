@@ -65,4 +65,8 @@
     <string name="nav_login">LogIn</string>
     <string name="nav_account">Account</string>
     <string name="nav_general">General</string>
+    <string name="nav_kpi">KPI</string>
+    <string name="nav_site">SITE</string>
+    <string name="nav_details">DETAILS</string>
+    <string name="nav_about">About</string>
 </resources>
