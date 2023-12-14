@@ -60,6 +60,7 @@ class MainApp : Application()  {
             user = users.findUserByEmail("homer@simpson.com")!!
             SaveCurrentUser()
         }
+        val  path = applicationContext.filesDir.absolutePath
         LoadSitesForCurrentUser()
         // create the http queue
         httpQueue = Volley.newRequestQueue(this)

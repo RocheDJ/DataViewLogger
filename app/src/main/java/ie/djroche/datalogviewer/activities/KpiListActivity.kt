@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
-import ie.djroche.datalogviewer.helpers.MessageBox
+import ie.djroche.datalogviewer.utils.MessageBox
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel

@@ -1,8 +1,6 @@
-package ie.djroche.datalogviewer.helpers
+package ie.djroche.datalogviewer.utils
 
 import android.content.Context
-import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.JSON_FILE
 import ie.djroche.datalogviewer.models.JSON_USERFILE
 import ie.djroche.datalogviewer.models.SiteKPIModel

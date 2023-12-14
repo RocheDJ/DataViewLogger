@@ -12,13 +12,17 @@ import androidx.navigation.ui.setupWithNavController
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.databinding.HomeBinding
 import ie.djroche.datalogviewer.databinding.NavHeaderBinding
+import ie.djroche.datalogviewer.main.MainApp
 import timber.log.Timber
+
 
 class Home : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navViewHeaderBinding: NavHeaderBinding
     private lateinit var homeBinding: HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+    //ToDo: Delete the reference to app when finished
+    lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,10 @@ class Home : AppCompatActivity() {
 
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
+
+        //ToDo: Delete the reference to app when finished
+        //launch the main app
+        app = application as MainApp
 
         Timber.i("Home Activity created...")
     }

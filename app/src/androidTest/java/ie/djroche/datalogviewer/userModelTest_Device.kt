@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import ie.djroche.datalogviewer.helpers.encryptString
+import ie.djroche.datalogviewer.utils.encryptString
 
 import ie.djroche.datalogviewer.models.UserJSONStore
 import ie.djroche.datalogviewer.models.UserModel

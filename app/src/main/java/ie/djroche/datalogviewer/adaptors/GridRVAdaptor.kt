@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.helpers.assetsToBitmap
+import ie.djroche.datalogviewer.utils.assetsToBitmap
 import ie.djroche.datalogviewer.models.SiteKPIModel
 
 internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,

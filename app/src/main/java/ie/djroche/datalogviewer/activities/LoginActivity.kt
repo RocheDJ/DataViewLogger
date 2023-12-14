@@ -6,13 +6,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.databinding.ActivityLoginBinding
-import ie.djroche.datalogviewer.helpers.ValidateUser
+import ie.djroche.datalogviewer.utils.ValidateUser
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.UserModel
 import timber.log.Timber

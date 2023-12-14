@@ -15,19 +15,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.adaptors.SiteRVAdaptor
-import ie.djroche.datalogviewer.adaptors.SiteListener
+import ie.djroche.datalogviewer.adaptors.SiteAdaptor
+import ie.djroche.datalogviewer.adaptors.SiteClickListener
 import ie.djroche.datalogviewer.databinding.ActivityMainBinding
 import ie.djroche.datalogviewer.databinding.NavHeaderBinding
-import ie.djroche.datalogviewer.helpers.cancelRequests
-import ie.djroche.datalogviewer.helpers.sendReadQRDataRequest
+import ie.djroche.datalogviewer.utils.cancelRequests
+import ie.djroche.datalogviewer.utils.sendReadQRDataRequest
 
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
 //------------------------------------------------------------------------------------------------
-class MainActivity : AppCompatActivity(), SiteListener ,
+class MainActivity : AppCompatActivity(), SiteClickListener ,
     NavigationView.OnNavigationItemSelectedListener  {
 
     lateinit var app: MainApp
@@ -298,12 +298,12 @@ class MainActivity : AppCompatActivity(), SiteListener ,
     private fun ShowSites(){
         //
         //binding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAll(),this)
-        acMainBinding.recyclerView.adapter = SiteRVAdaptor(app.sites.findAllForUser(app.user.id.toString()),this)
+       // acMainBinding.recyclerView.adapter = SiteAdaptor(app.sites.findAllForUser(app.user.id.toString()),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun HideSites(){
         // hide sites
-       acMainBinding.recyclerView.adapter =SiteRVAdaptor(emptyList(),this)
+      // acMainBinding.recyclerView.adapter =SiteAdaptor(emptyList(),this)
     }
     // --------------------------------------------------------------------------------------------
     private fun AddSite(){

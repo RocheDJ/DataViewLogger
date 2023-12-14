@@ -1,4 +1,4 @@
-package ie.djroche.datalogviewer.helpers
+package ie.djroche.datalogviewer.utils
 
 import com.android.volley.Request
 import com.android.volley.Response

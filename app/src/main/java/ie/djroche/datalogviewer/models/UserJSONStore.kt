@@ -4,10 +4,10 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import ie.djroche.datalogviewer.helpers.exists
-import ie.djroche.datalogviewer.helpers.loadDummyUserJSONData
-import ie.djroche.datalogviewer.helpers.read
-import ie.djroche.datalogviewer.helpers.write
+import ie.djroche.datalogviewer.utils.exists
+import ie.djroche.datalogviewer.utils.loadDummyUserJSONData
+import ie.djroche.datalogviewer.utils.read
+import ie.djroche.datalogviewer.utils.write
 import java.lang.reflect.Type
 
 const val JSON_USERFILE = "users.json"

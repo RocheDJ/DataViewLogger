@@ -1,5 +1,5 @@
 package ie.djroche.datalogviewer
-import ie.djroche.datalogviewer.helpers.encryptString
+import ie.djroche.datalogviewer.utils.encryptString
 import ie.djroche.datalogviewer.models.UserMemStore
 import ie.djroche.datalogviewer.models.UserModel
 import ie.djroche.datalogviewer.models.UserStore

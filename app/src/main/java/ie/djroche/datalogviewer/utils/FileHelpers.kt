@@ -1,4 +1,4 @@
-package ie.djroche.datalogviewer.helpers
+package ie.djroche.datalogviewer.utils
 import android.content.Context
 import timber.log.Timber.Forest.e
 import java.io.*

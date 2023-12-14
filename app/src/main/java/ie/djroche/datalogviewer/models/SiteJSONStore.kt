@@ -5,10 +5,9 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.lang.reflect.Type
-import ie.djroche.datalogviewer.helpers.*
+import ie.djroche.datalogviewer.utils.*
 import android.content.Context
-import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.main.MainApp
+import androidx.lifecycle.MutableLiveData
 
 const val JSON_FILE = "sites.json"
 
@@ -31,7 +30,7 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
         }
     }
 
-    override fun findAll(): List<SiteModel> {
+     fun findAll(): List<SiteModel> {
         return sites
     }
 
@@ -49,6 +48,10 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
     override fun find(siteID: String): SiteModel? {
         var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         return foundSite
+    }
+
+    override fun findAll(siteList: MutableLiveData<List<SiteModel>>) {
+        TODO("Not yet implemented")
     }
 
     override fun findByQR(QRcode: String): SiteModel? {
