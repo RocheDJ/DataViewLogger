@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="kpi"
+            type="ie.djroche.datalogviewer.models.SiteKPIModel"  />
+    </data>
+<androidx.cardview.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -24,7 +30,7 @@
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:padding="4dp"
-            android:text="@string/app_name"
+            android:text="@{kpi.title}"
             android:textAlignment="center"
             android:textColor="@color/black" />
 
@@ -58,7 +64,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:padding="4dp"
-                    android:text="@string/app_name"
+                    android:text="@{Double.toString(kpi.value)}"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/black" />
@@ -70,7 +76,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:padding="4dp"
-                    android:text="@string/app_name"
+                    android:text="@{kpi.unit}"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="@color/black" />
@@ -81,3 +87,4 @@
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+</layout>

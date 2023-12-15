@@ -71,12 +71,12 @@ class SiteJSONStore(private val context: Context,private val userID : String) : 
         serialize()
     }
 
-    override fun getkpi(siteID: String): MutableList<SiteKPIModel>? {
-        var foundSite: SiteModel? = sites.find { p -> p.id == siteID }
+    override fun getKPI(siteID: String, siteKPIList:MutableLiveData<List<SiteKPIModel>>) {
+        val foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         if (foundSite != null) {
-           return foundSite.data
+            siteKPIList.value =  foundSite.data
         }else {
-            return null
+            siteKPIList.value = null
         }
     }
     override fun update(site: SiteModel) {

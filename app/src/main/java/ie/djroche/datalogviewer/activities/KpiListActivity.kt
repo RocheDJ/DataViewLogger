@@ -11,7 +11,6 @@ import android.widget.GridView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.adaptors.GridRVAdapter
 import ie.djroche.datalogviewer.databinding.ActivityKpiListBinding
 import ie.djroche.datalogviewer.utils.MessageBox
 import ie.djroche.datalogviewer.main.MainApp
@@ -54,8 +53,8 @@ class KpiListActivity : AppCompatActivity() {
             selectedSite = app.sites.findByQR(strQRCode)!!
             // some code
             kpiList = selectedSite.data
-            val kpiAdapter = GridRVAdapter(kpiList = kpiList , this@KpiListActivity)
-            kpiGRV.adapter = kpiAdapter
+          //  val kpiAdapter = KPIAdapter(kpiList = kpiList , this@KpiListActivity)
+        //    kpiGRV.adapter = kpiAdapter
 
             // load the site Description dont allow editing until enabled
             binding.etDescription.setText(selectedSite.description)
@@ -79,7 +78,7 @@ class KpiListActivity : AppCompatActivity() {
 
     // ------------------   Load the Menu Items  --------------------------
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_kpilist, menu)
+        menuInflater.inflate(R.menu.menu_kpi, menu)
        UpdateMenuIcons()
         return super.onCreateOptionsMenu(menu)
     }
@@ -89,27 +88,7 @@ class KpiListActivity : AppCompatActivity() {
             R.id.item_Back -> {
                 finish()
             }
-            R.id.item_Edit-> {
-                xEdit =true
 
-                binding.etDescription.setTextIsSelectable(xEdit);
-                binding.etDescription.isEnabled = xEdit
-                UpdateMenuIcons()
-                Timber.i("Edit site Pressed")
-            }
-            R.id.item_Done->{
-                xEdit =false
-                binding.etDescription.setTextIsSelectable(xEdit);
-                binding.etDescription.isEnabled = xEdit
-                UpdateMenuIcons()
-                UpdateSiteDescription()
-            }
-            R.id.item_AddKPI -> {
-                showScanQR()
-            }
-            R.id.item_DeleteSite -> {
-                DeleteSite()
-            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -162,8 +141,8 @@ class KpiListActivity : AppCompatActivity() {
     // -------------------------------------------------------------------------------------------
     private fun UpdateKPIList() {
         kpiList = selectedSite.data
-        val kpiAdapter = GridRVAdapter(kpiList = kpiList, this@KpiListActivity)
-        kpiGRV.adapter = kpiAdapter
+   //     val kpiAdapter = KPIAdapter(kpiList = kpiList, this@KpiListActivity)
+   //     kpiGRV.adapter = kpiAdapter
     }
     // -------------------------------------------------------------------------------------------
     private fun DeleteSite() {

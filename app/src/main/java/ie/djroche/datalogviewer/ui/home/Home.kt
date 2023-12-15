@@ -2,6 +2,7 @@ package ie.djroche.datalogviewer.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.service.autofill.UserData
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -13,12 +14,13 @@ import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.databinding.HomeBinding
 import ie.djroche.datalogviewer.databinding.NavHeaderBinding
 import ie.djroche.datalogviewer.main.MainApp
+import ie.djroche.datalogviewer.models.UserModel
 import timber.log.Timber
 
 
 class Home : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navViewHeaderBinding: NavHeaderBinding
+    private lateinit var navHeaderBinding: NavHeaderBinding
     private lateinit var homeBinding: HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     //ToDo: Delete the reference to app when finished
@@ -58,17 +60,24 @@ class Home : AppCompatActivity() {
     /* ----------------------------------------------------------------------------------------------- */
     public override fun onStart() {
         super.onStart()
+        updateNavHeader(app.user)
+
         Timber.i("Home Activity started...")
     }
     /* ----------------------------------------------------------------------------------------------- */
     override fun onSupportNavigateUp(): Boolean {
-
         val navController = findNavController(R.id.nav_host_fragment)
         Timber.i("Home Activity Navigate Up...")
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-
     }
 
+
+    /* ----------------------------------------------------------------------------------------------- */
+    private fun updateNavHeader(currentUser: UserModel) {
+        var headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderBinding.bind(headerView)
+        navHeaderBinding.tvUser.text = currentUser.email
+    }
 
 
 }

@@ -39,7 +39,7 @@ class SiteAdaptor constructor(private var sites: ArrayList<SiteModel>,
         RecyclerView.ViewHolder(binding.root) {
         fun bind(site: SiteModel, listener: SiteClickListener) {
             binding.root.tag =site
-            binding.site = site
+            binding.site = site // site is linked to the card_site.xml data declaration
             binding.siteImageView.setImageResource(R.drawable.industry40)
             binding.root.setOnClickListener { listener.onSiteClick(site) }
         }

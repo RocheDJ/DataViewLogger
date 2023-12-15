@@ -57,13 +57,13 @@ object SiteManager : SiteStore {
         serialize()
     }
 
-    override fun getkpi(siteID: String): MutableList<SiteKPIModel>? {
+    override fun getKPI(siteID: String, siteKPIList : MutableLiveData<List<SiteKPIModel>>){
         deserialize()
         val foundSite: SiteModel? = sites.find { p -> p.id == siteID }
         if (foundSite != null) {
-            return foundSite.data
+            siteKPIList.value= foundSite.data
         }else {
-            return null
+            siteKPIList.value= null
         }
 
     }

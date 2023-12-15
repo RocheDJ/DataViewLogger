@@ -71,4 +71,5 @@
     <string name="nav_about">About</string>
     <string name="messageLoading">Please Wait While we fetch your Info</string>
     <string name="sitesNotFound">Site list not found !!</string>
+    <string name="kpisNotFound">Could not load KPIs, Did you select Site.</string>
 </resources>

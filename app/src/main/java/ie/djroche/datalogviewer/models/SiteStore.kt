@@ -13,5 +13,5 @@ interface SiteStore {
 
     fun create(site: SiteModel):String
     fun delete(site: SiteModel)
-    fun getkpi(siteID:String):MutableList<SiteKPIModel>?
+    fun getKPI(siteID:String, siteKPIList:MutableLiveData<List<SiteKPIModel>>)
 }

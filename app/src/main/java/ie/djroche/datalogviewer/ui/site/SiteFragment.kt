@@ -1,14 +1,20 @@
 package ie.djroche.datalogviewer.ui.site
 
 import android.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,13 +27,14 @@ import ie.djroche.datalogviewer.utils.createLoader
 import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
 import timber.log.Timber
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 
 class SiteFragment : Fragment(), SiteClickListener {
     private var _fragBinding: FragmentSiteBinding? = null
     private val fragBinding get() = _fragBinding!!
     private val siteViewModel : SiteViewModel by activityViewModels()
     lateinit var loader : AlertDialog
-    private lateinit var viewModel: SiteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +59,6 @@ class SiteFragment : Fragment(), SiteClickListener {
         })
 
         setSwipeRefresh()
-
 
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -89,11 +95,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     if (fragBinding.swiperefresh.isRefreshing)
         fragBinding.swiperefresh.isRefreshing = false
     }
-    /*------------------------------------------------------------------------------------------------*/
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
-    }
+
     /* ------------------------------------------------------------------------------------------ */
     private fun render(siteList: ArrayList<SiteModel>) {
 
@@ -116,10 +118,10 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*---------------------------------------------------------------------------------------------*/
     override fun onSiteClick(site: SiteModel) {
         Timber.i("Site clicked " + site.description)
-        // TODO:"Not yet implemented"
-       /*
-        val action = ReportFragmentDirections.actionReportFragmentToDonationDetailFragment(donation.uid!!)
+        // note for this to work need androidx.navigation.safeargs in both gradle files
+        val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id)
         findNavController().navigate(action)
-        */
+
     }
+
 }

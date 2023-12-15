@@ -5,15 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import ie.djroche.datalogviewer.R
+import ie.djroche.datalogviewer.databinding.CardKpiBinding
 import ie.djroche.datalogviewer.utils.assetsToBitmap
 import ie.djroche.datalogviewer.models.SiteKPIModel
 
-internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
-                             private val context: Context
-                            ) :
+interface KPIGridClickListener {
+    fun onKPIGridClick(kpi: SiteKPIModel)
+}
+
+internal class KPIGridViewAdaptor(private val kpiList: List<SiteKPIModel>,
+                             private val context: Context,private val listener: KPIGridClickListener
+) :
     BaseAdapter() {
     // in base adapter class we are creating variables
     // for layout inflater, course image view and course text view.
@@ -46,33 +52,27 @@ internal class GridRVAdapter(private val kpiList: List<SiteKPIModel>,
             layoutInflater =
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         }
+
         // check if convert view is null.
         // If it is initializing it.
         if (convertView == null) {
             // pass the layout file
             // which we have to inflate for each item of grid view.
-            convertView = layoutInflater!!.inflate(R.layout.gridview_item, null)
+            convertView = layoutInflater!!.inflate(R.layout.card_kpi, null)
         }
-        // on below line we are initializing our course image view
-        // and course text view with their ids.
-        titleTV = convertView!!.findViewById(R.id.idTvTitle)
-        valueTV = convertView!!.findViewById(R.id.idTVValue)
-        unitTV = convertView!!.findViewById(R.id.idTVUnit)
+
+        val binding = CardKpiBinding
+            .inflate(LayoutInflater.from(parent!!.context), parent, false)
+
+        val  myKPI = kpiList.get(position)
+        binding.kpi= myKPI
+        binding.root.setOnClickListener { listener.onKPIGridClick(kpiList.get(position)) }
         iconIV = convertView!!.findViewById(R.id.idIVIcon)
         // setting image view.
-        var assetFilename = kpiList.get(position).icon
+        val assetFilename = myKPI.icon
         val myBitmap = assetFilename.assetsToBitmap(context)
-        iconIV.setImageBitmap(myBitmap)
-       // iconIV.setImageResource(kpiList.get(position).icon)
-        // set title.
-        titleTV.setText(kpiList.get(position).title)
-        //set unit
-        unitTV.setText(kpiList.get(position).unit)
-        // set value.
-        //ToDo: Round the value to be displaied
-        valueTV.setText(kpiList.get(position).value.toString())
-        //  return our convert view.
-        return convertView
+        binding.idIVIcon.setImageBitmap(myBitmap)
+        return binding.root
     }
 
 }

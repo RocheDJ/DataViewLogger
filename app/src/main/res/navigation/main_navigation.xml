@@ -20,6 +20,7 @@
             app:destination="@id/kpiFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -35,8 +36,8 @@
     <fragment
         android:id="@+id/kpiFragment"
         android:name="ie.djroche.datalogviewer.ui.kpi.KPIFragment"
-        android:label="fragment_k_p_i"
-        tools:layout="@layout/fragment_k_p_i" >
+        android:label="Key Performance Indicators"
+        tools:layout="@layout/fragment_k_p_i">
         <action
             android:id="@+id/action_KPIFragment_to_siteFragment2"
             app:destination="@id/siteFragment"
@@ -47,5 +48,8 @@
             app:destination="@id/detailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="siteID"
+            app:argType="string" />
     </fragment>
 </navigation>

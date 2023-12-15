@@ -17,6 +17,7 @@ class SiteViewModel : ViewModel() {
     val observableSiteList: LiveData<List<SiteModel>>
         get() = siteList
 
+
     //-----------------------------------------------------------------------------
     init {
         load()
@@ -31,6 +32,7 @@ class SiteViewModel : ViewModel() {
             Timber.i("Report Load Error : $e.message")
         }
     }
+
 
     //-----------------------------------------------------------------------------
     fun delete(userid: String, id: String) {
