@@ -17,10 +17,10 @@ class SiteViewModel : ViewModel() {
     val observableSiteList: LiveData<List<SiteModel>>
         get() = siteList
 
-    private val _scannedQR = MutableLiveData<String>()
-    
-    val scannedQR : LiveData<String>
-        get() = _scannedQR
+    private var _site =
+        MutableLiveData<SiteModel>()
+    val observableSite: LiveData<SiteModel>
+        get() = _site
 
     //-----------------------------------------------------------------------------
     init {
@@ -37,8 +37,14 @@ class SiteViewModel : ViewModel() {
         }
     }
     //-----------------------------------------------------------------------------
-    fun setScannedQR(value:String){
-        _scannedQR.value = value
+    fun findByQR(userid: String, id: String){
+        try {
+             _site.value = SiteManager.findByQR(id)
+
+            Timber.i("Site findByQR Called")
+        } catch (e: Exception) {
+            Timber.i("Site findByQR Error : $e.message")
+        }
     }
     //-----------------------------------------------------------------------------
     fun delete(userid: String, id: String) {
@@ -51,6 +57,9 @@ class SiteViewModel : ViewModel() {
             Timber.i("Site Delete Error : $e.message")
         }
     }
-
-
+    //-----------------------------------------------------------------------------
+    fun clearSite()
+    {
+        _site.value!!.id= null!!
+    }
 }

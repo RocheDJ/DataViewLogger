@@ -1,28 +1,33 @@
 package ie.djroche.datalogviewer.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.SurfaceHolder
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.vision.CameraSource
-import com.google.android.gms.vision.barcode.Barcode
-import com.google.android.gms.vision.barcode.BarcodeDetector
-import ie.djroche.datalogviewer.databinding.ActivityQrscanBinding
-import ie.djroche.datalogviewer.R
-import android.view.SurfaceHolder
-import androidx.activity.viewModels
-import java.io.IOException
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Detector.Detections
+import com.google.android.gms.vision.barcode.Barcode
+import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.google.android.material.snackbar.Snackbar
+import ie.djroche.datalogviewer.R
+import ie.djroche.datalogviewer.databinding.ActivityQrscanBinding
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.ui.site.SiteViewModel
+import java.io.IOException
+
+interface MyStringListener {
+    fun computeSomething(myString: String?): Int?
+}
 
 class QRScanActivity : AppCompatActivity() {
 
@@ -32,8 +37,10 @@ class QRScanActivity : AppCompatActivity() {
     private var scannedValue = ""
     private lateinit var binding: ActivityQrscanBinding
     lateinit var app: MainApp
-    private val siteViewModel : SiteViewModel by viewModels()
-//--------------------------------------------------------------------------------------------------
+    private val siteViewModel: SiteViewModel by viewModels()
+    val data = Intent()
+
+    //--------------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQrscanBinding.inflate(layoutInflater)
@@ -45,10 +52,10 @@ class QRScanActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-    // reference to main app
+        // reference to main app
         app = application as MainApp
 
-    // ask for permission to use Camera
+        // ask for permission to use Camera
         if (ContextCompat.checkSelfPermission(
                 this@QRScanActivity, android.Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
@@ -60,7 +67,7 @@ class QRScanActivity : AppCompatActivity() {
         val aniSlide: Animation =
             AnimationUtils.loadAnimation(this@QRScanActivity, R.anim.scanner_animation)
         binding.barcodeLine.startAnimation(aniSlide)
-        }
+    }
 
     // ------------------   Load the Menu Items  --------------------------
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,6 +84,7 @@ class QRScanActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     //--------------------------------------------------------------------------------------------------
     private fun askForCameraPermission() {
         ActivityCompat.requestPermissions(
@@ -85,6 +93,7 @@ class QRScanActivity : AppCompatActivity() {
             requestCodeCameraPermission
         )
     }
+
     //--------------------------------------------------------------------------------------------------
     private fun setupControls() {
         barcodeDetector =
@@ -96,7 +105,7 @@ class QRScanActivity : AppCompatActivity() {
             .build()
 
         binding.cameraSurfaceView.getHolder().addCallback(object : SurfaceHolder.Callback {
-           @SuppressLint("MissingPermission")
+            @SuppressLint("MissingPermission")
             override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
                     //Start preview after 1s delay
@@ -128,7 +137,11 @@ class QRScanActivity : AppCompatActivity() {
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
-                Snackbar.make(binding.root,getString(R.string.scanner_has_been_closed), Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.scanner_has_been_closed),
+                    Snackbar.LENGTH_LONG
+                )
                     .show()
             }
 
@@ -136,20 +149,24 @@ class QRScanActivity : AppCompatActivity() {
                 val barcodes = detections.detectedItems
                 if (barcodes.size() == 1) {
                     scannedValue = barcodes.valueAt(0).rawValue
+                    data.putExtra("scannedQR", scannedValue)
 
-                   // app.qrCode = scannedValue
                     runOnUiThread {
                         cameraSource.stop()
-                        Snackbar.make(binding.root,getString(R.string.scanner_has_been_closed) + " $scannedValue", Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.scanner_has_been_closed) + " $scannedValue",
+                            Snackbar.LENGTH_LONG
+                        )
                             .show()
-                        setResult(RESULT_OK);
-                        siteViewModel.setScannedQR(scannedValue)
+                        setResult(RESULT_OK,data);
                         finish()
                     }
                 }
             }
         })
     }
+
     //--------------------------------------------------------------------------------------------------
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -161,10 +178,15 @@ class QRScanActivity : AppCompatActivity() {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupControls()
             } else {
-                Snackbar.make(binding.root,getString(R.string.Permission_Denied) , Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.Permission_Denied),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         }
     }
+
     //--------------------------------------------------------------------------------------------------
     override fun onDestroy() {
         super.onDestroy()

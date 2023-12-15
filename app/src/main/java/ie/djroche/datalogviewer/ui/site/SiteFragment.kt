@@ -38,6 +38,19 @@ class SiteFragment : Fragment(), SiteClickListener {
     private val siteViewModel : SiteViewModel by activityViewModels()
     lateinit var loader : AlertDialog
 
+    // register for QR Scan result
+    // https://stackoverflow.com/questions/14785806/android-how-to-make-an-activity-return-results-to-the-activity-which-calls-it
+    private val intentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val scannedQR =  result.data?.getStringExtra("scannedQR")
+                if (scannedQR != null) {
+                    processQRScan(scannedQR)
+                }
+                Timber.i("QR Observer registerForActivityResult = $scannedQR")
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +62,7 @@ class SiteFragment : Fragment(), SiteClickListener {
 
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        //  the site info
+        //  the site List info
         showLoader(loader,"Downloading Sites")
         siteViewModel.observableSiteList.observe(viewLifecycleOwner, Observer {
                 sites ->
@@ -58,11 +71,10 @@ class SiteFragment : Fragment(), SiteClickListener {
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
-
         })
 
         setSwipeRefresh()
-
+        // swipe to delete
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 showLoader(loader,"Deleting Site")
@@ -74,16 +86,19 @@ class SiteFragment : Fragment(), SiteClickListener {
                 hideLoader(loader)
             }
         }
+        // Delete
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
 
 
+
+
+
+        // listen for the fragment button press
         fragBinding.fabScan.setOnClickListener {
             Timber.i("QR Scan Pressed from site")
             showScanQR()
         }
-
-
 
         return root
     }
@@ -124,40 +139,35 @@ class SiteFragment : Fragment(), SiteClickListener {
     override fun onSiteClick(site: SiteModel) {
         Timber.i("Site clicked " + site.description)
         // note for this to work need androidx.navigation.safeargs in both gradle files
-        val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
-        findNavController().navigate(action)
-
+        selectSite(site)
     }
+
 
     /*---------------------------------------------------------------------------------------------*/
     override fun  onResume(){
         super.onResume()
-        // Observer for the QR code change
-        // from https://developer.android.com/topic/libraries/architecture/livedata
-        // https://betulnecanli.medium.com/livedata-full-guide-acc7fbbb4ef9
-        // Create the observer which updates the UI.
-        siteViewModel.scannedQR.observe(viewLifecycleOwner, Observer {
-            Timber.i("QR Observer code changed ${it.toString()}")
+
+        // observer the selected site changed
+        siteViewModel.observableSite.observe(viewLifecycleOwner, Observer {
+                site ->
+            site?.let {
+                selectSite(it)
+            }
+
         })
-        Timber.i("QR On Resume QR code = ${siteViewModel.scannedQR.value}")
     }
     /*---------------------------------------------------------------------------------------------*/
     private fun showScanQR() {
         Timber.i("DataLogViewer Scan QR selected")
-
-        //launch the KPI page
-        val launcherIntent = Intent(this.context, QRScanActivity::class.java)
-        getResultQRScan.launch(launcherIntent)
+        intentLauncher.launch(Intent(this.context,  QRScanActivity::class.java))
     }
     /*---------------------------------------------------------------------------------------------*/
-    private val getResultQRScan =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                Timber.i("QR Scan Returned OK")
-                Timber.i("QR Scan Is the Value" +  siteViewModel.scannedQR.value)
-                //ToDo: Validate the QR Code
-            }
-        }
+    private fun processQRScan(qrCode:String){
+        siteViewModel.findByQR("1234",qrCode)
+    }
+
+    private fun selectSite(site: SiteModel){
+        val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
+        findNavController().navigate(action)
+    }
 }
