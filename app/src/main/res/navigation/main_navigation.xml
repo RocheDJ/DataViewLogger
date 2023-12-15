@@ -51,5 +51,7 @@
         <argument
             android:name="siteID"
             app:argType="string" />
+        <argument android:name="siteDescription"
+            app:argType="string" />
     </fragment>
 </navigation>

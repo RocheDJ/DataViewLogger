@@ -12,11 +12,15 @@ class SiteViewModel : ViewModel() {
     // declare the list of sites
     private var siteList =
         MutableLiveData<List<SiteModel>>()
-
+    
     // list of sites as observable by the view model
     val observableSiteList: LiveData<List<SiteModel>>
         get() = siteList
 
+    private val _scannedQR = MutableLiveData<String>()
+    
+    val scannedQR : LiveData<String>
+        get() = _scannedQR
 
     //-----------------------------------------------------------------------------
     init {
@@ -32,8 +36,10 @@ class SiteViewModel : ViewModel() {
             Timber.i("Report Load Error : $e.message")
         }
     }
-
-
+    //-----------------------------------------------------------------------------
+    fun setScannedQR(value:String){
+        _scannedQR.value = value
+    }
     //-----------------------------------------------------------------------------
     fun delete(userid: String, id: String) {
         try {

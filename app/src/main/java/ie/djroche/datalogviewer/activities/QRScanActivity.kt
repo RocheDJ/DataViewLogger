@@ -16,11 +16,13 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import ie.djroche.datalogviewer.databinding.ActivityQrscanBinding
 import ie.djroche.datalogviewer.R
 import android.view.SurfaceHolder
+import androidx.activity.viewModels
 import java.io.IOException
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.Detector.Detections
 import com.google.android.material.snackbar.Snackbar
 import ie.djroche.datalogviewer.main.MainApp
+import ie.djroche.datalogviewer.ui.site.SiteViewModel
 
 class QRScanActivity : AppCompatActivity() {
 
@@ -30,6 +32,7 @@ class QRScanActivity : AppCompatActivity() {
     private var scannedValue = ""
     private lateinit var binding: ActivityQrscanBinding
     lateinit var app: MainApp
+    private val siteViewModel : SiteViewModel by viewModels()
 //--------------------------------------------------------------------------------------------------
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,12 +136,14 @@ class QRScanActivity : AppCompatActivity() {
                 val barcodes = detections.detectedItems
                 if (barcodes.size() == 1) {
                     scannedValue = barcodes.valueAt(0).rawValue
-                    app.qrCode = scannedValue
+
+                   // app.qrCode = scannedValue
                     runOnUiThread {
                         cameraSource.stop()
                         Snackbar.make(binding.root,getString(R.string.scanner_has_been_closed) + " $scannedValue", Snackbar.LENGTH_LONG)
                             .show()
                         setResult(RESULT_OK);
+                        siteViewModel.setScannedQR(scannedValue)
                         finish()
                     }
                 }

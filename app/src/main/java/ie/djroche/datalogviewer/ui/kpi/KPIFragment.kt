@@ -73,7 +73,6 @@ class KPIFragment : Fragment() ,KPIGridClickListener{
         } else {
             fragBinding.gridView.visibility = View.VISIBLE
             fragBinding.kpisNotFound.visibility = View.GONE
-           // fragBinding.site =
         }
 
     }
@@ -104,6 +103,7 @@ class KPIFragment : Fragment() ,KPIGridClickListener{
                 kpiViewModel.getKPIs(
                     "12345",
                     args.siteID)
+                fragBinding.siteDescription = args.siteDescription
             }
         } catch (e : Exception) {
             Timber.e("KPI Grid onResume error  " + e.message )
