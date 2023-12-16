@@ -153,7 +153,6 @@ class SiteFragment : Fragment(), SiteClickListener {
             site?.let {
                 selectSite(it)
             }
-
         })
     }
     /*---------------------------------------------------------------------------------------------*/

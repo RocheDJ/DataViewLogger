@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="siteDescription"
+            name="siteDescriptionVM"
             type="String" />
     </data>
 
@@ -34,14 +34,20 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvSiteName"
+                <EditText
+                    android:id="@+id/editSiteName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{siteDescription}"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="4dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:text="@={siteDescriptionVM}"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editMessage" />
 
                 <GridView
                     android:id="@+id/gridView"
@@ -71,14 +77,29 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/sitesNotFound" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabScan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+        <Button
+            android:id="@+id/updateSiteButton"
+            android:layout_width="@dimen/kpi_button_width"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/update_site"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/kpisNotFound"
-            app:srcCompat="@drawable/ic_menu_qr" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.064"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/addKPIButton"
+            android:layout_width="@dimen/kpi_button_width"
+            android:layout_height="0dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/add_kpi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.977"
+            app:layout_constraintStart_toEndOf="@+id/updateSiteButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -17,7 +17,13 @@ class KPIViewModel : ViewModel() {
     // list of kpi as observable by the view model
     val observableKPIList: LiveData<List<SiteKPIModel>>
         get() = kpiList
-    
+
+    private val _SiteDescription =
+        MutableLiveData<String>()
+
+    val observableSiteDescription :LiveData<String>
+        get() = _SiteDescription
+
     //-----------------------------------------------------------------------------
     fun getKPIs(userid:String, id: String) {
         try {
@@ -42,8 +48,24 @@ class KPIViewModel : ViewModel() {
         }
     }
     //-----------------------------------------------------------------------------
-    fun addKPI(userid: String, id: String) {
-        //ToDo: complete addKPI
+    fun addKPI(userid: String, id: String,kpiData:SiteKPIModel) {
+        SiteManager.addKPI(userid,id,kpiData)
         Timber.i("KPI Add Called")
     }
+    //----------------------------------------------------------------------------
+    fun updateSiteDescription(userid: String, id: String,newDescription :String) {
+        try {
+            val site = SiteManager.find(id)
+
+            if (site != null) {
+                site.description = newDescription
+                SiteManager.update(site)
+            }
+            // FirebaseDBManager.delete(userid,id)
+            Timber.i("Site update called")
+        } catch (e: Exception) {
+            Timber.i("Site Update Error : $e.message")
+        }
+    }
+
 }

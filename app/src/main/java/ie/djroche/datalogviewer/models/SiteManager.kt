@@ -68,6 +68,22 @@ object SiteManager : SiteStore {
 
     }
 
+    override fun addKPI(userID: String, siteID: String, aKPI: SiteKPIModel) {
+        deserialize()
+        val foundSite: SiteModel? = sites.find { p -> p.id == siteID }
+        if (foundSite != null) {
+            foundSite.data.add(aKPI.copy())
+            serialize()
+        }else {
+            Timber.i("AddKPI  Error : Not Found")
+        }
+
+    }
+
+
+
+
+
     override fun update(site: SiteModel) {
         deserialize()
         var foundSite: SiteModel? = sites.find { p -> p.id == site.id }
