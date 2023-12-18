@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.DataLogViewer" parent="Base.Theme.DataLogViewer">
+        <!-- Transparent system bars for edge-to-edge. -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+    </style>
+    <!-- Dark Buttons -->
+    <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorButtonNormal">@color/color_Grey_500</item>
+        <item name="colorAccent">@color/color_BlueAccent</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Light EditTexts -->
+    <style name="ThemeOverlay.MyLightEditText" parent="ThemeOverlay.AppCompat.Dark"/>
+</resources>

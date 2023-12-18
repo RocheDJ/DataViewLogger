@@ -10,12 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +25,6 @@ import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
 import timber.log.Timber
 import androidx.navigation.fragment.findNavController
-
 import ie.djroche.datalogviewer.activities.QRScanActivity
 
 class SiteFragment : Fragment(), SiteClickListener {
@@ -89,8 +84,6 @@ class SiteFragment : Fragment(), SiteClickListener {
         // Delete
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
-
-
 
 
 

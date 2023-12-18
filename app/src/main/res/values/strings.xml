@@ -73,4 +73,27 @@
     <string name="sitesNotFound">Site list not found !!</string>
     <string name="kpisNotFound">Could not load KPIs, Did you select Site.</string>
     <string name="update_site">Update Site</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="auth_failed">Authentication failed</string>
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+    <string name="emailpassword_status_fmt">Email User: %1$s (verified: %2$b)</string>
+    <string name="emailpassword_title_text">Please Login Below</string>
+    <string name="access_control">Access Control</string>
+    <string name="login_Dialogue">Login Dialogue</string>
+    <string name="loading">Loading…</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed Out</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="send_link">Send Link</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="verify_email">Verify Email</string>
 </resources>

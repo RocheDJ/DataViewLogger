@@ -30,7 +30,6 @@ import ie.djroche.datalogviewer.databinding.FragmentKPIBinding
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.gsonBuilder
 import ie.djroche.datalogviewer.models.listKpiType
-import ie.djroche.datalogviewer.ui.site.SiteViewModel
 import ie.djroche.datalogviewer.utils.createLoader
 import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
@@ -42,7 +41,6 @@ class KPIFragment : Fragment(), KPIGridClickListener {
     private val kpiViewModel: KPIViewModel by activityViewModels()
     lateinit var loader: AlertDialog
     private val args by navArgs<KPIFragmentArgs>()
-    private val siteViewModel: SiteViewModel by activityViewModels()
 
     private val intentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -110,21 +108,23 @@ class KPIFragment : Fragment(), KPIGridClickListener {
 
     // ------------------------- RENDER the Menu for fragment--------------------------------------
     private fun setupMenu() {
+        setHasOptionsMenu(true)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onPrepareMenu(menu: Menu) {
                 // Handle for example visibility of menu items
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_kpi, menu)
+                menuInflater.inflate(R.menu.menu_back, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Validate and handle the selected menu item
+                if(menuItem.itemId == R.id.item_Back){
+                    findNavController().popBackStack()
+                    return true
+                }
                 return NavigationUI.onNavDestinationSelected(
-                    menuItem,
-                    requireView().findNavController()
-                )
+                    menuItem, requireView().findNavController())
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }

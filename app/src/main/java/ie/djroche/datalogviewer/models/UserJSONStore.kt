@@ -53,15 +53,27 @@ class UserJSONStore( private val context: Context):UserStore
     }
 
     // Add a user to the data array
-    override fun create(user: UserModel): String {
+    override fun register(user: UserModel): String {
         users.add(user.copy())
         serialize()
         return user.id.toString()
     }
 
+    override fun register(email: String?, password: String?): UserModel? {
+        TODO("Not yet implemented")
+    }
+
     override fun delete(user: UserModel) {
         users.remove(user)
         serialize()
+    }
+
+    override fun login(email: String?, password: String?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun logOut() {
+        TODO("Not yet implemented")
     }
 
     //convert user Data to JSON and save

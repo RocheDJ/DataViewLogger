@@ -3,8 +3,10 @@ package ie.djroche.datalogviewer.models
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.io.File
+import java.lang.reflect.Type
 
 
 object SiteManager : SiteStore {
@@ -13,6 +15,7 @@ object SiteManager : SiteStore {
     //the path is data/user/0/ie.djroche.datalogviewer/files from applicationContext.filesDir.absolutePath
     private const val JSON_FILE = "data/user/0/ie.djroche.datalogviewer/files/sites.json"
     private var sites = mutableListOf<SiteModel>()
+    private val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
     private val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
         .create()
     override fun findAll(siteList: MutableLiveData<List<SiteModel>>){

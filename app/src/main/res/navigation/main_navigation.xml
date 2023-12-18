@@ -39,7 +39,7 @@
         android:label="Key Performance Indicators"
         tools:layout="@layout/fragment_k_p_i">
         <action
-            android:id="@+id/action_KPIFragment_to_siteFragment2"
+            android:id="@+id/action_KPIFragment_to_siteFragment"
             app:destination="@id/siteFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
@@ -54,4 +54,8 @@
         <argument android:name="siteDescription"
             app:argType="string" />
     </fragment>
+    <activity
+        android:id="@+id/login"
+        android:name="ie.djroche.datalogviewer.auth.Login"
+        android:label="Login" />
 </navigation>

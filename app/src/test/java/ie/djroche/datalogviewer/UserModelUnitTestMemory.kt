@@ -33,7 +33,7 @@ class UserModelUnitTestMemory {
     @Test
     fun test01_CheckUser_By_ID_Return_True(){
         //create a new user and
-        var retId = testUsers.create(myNewUser_1.copy())
+        var retId = testUsers.register(myNewUser_1.copy())
         var returnedUser = testUsers.findUserById(retId)
         assertEquals( myNewUser_1,returnedUser)
 
@@ -41,7 +41,7 @@ class UserModelUnitTestMemory {
 
     @Test
     fun test02_CheckUser_By_Email_Returns_True(){
-        var retId = testUsers.create(myNewUser_1.copy())
+        var retId = testUsers.register(myNewUser_1.copy())
 
         var returnedUser = testUsers.findUserById(retId)
         assertEquals( myNewUser_1,returnedUser)
@@ -55,7 +55,7 @@ class UserModelUnitTestMemory {
         /* check we can find the user
          then delete the user and no longer find it
          */
-        var retId = testUsers.create(myNewUser_1.copy())
+        var retId = testUsers.register(myNewUser_1.copy())
 
         var returnedUser = testUsers.findUserById(retId)
         assertEquals( myNewUser_1,returnedUser)

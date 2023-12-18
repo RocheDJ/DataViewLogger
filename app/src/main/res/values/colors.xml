@@ -5,4 +5,7 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorTeal">#008080</color>
+    <color name="color_Blue100">#2196F3</color>
+    <color name="color_BlueAccent">#034F8F</color>
+    <color name="color_Grey_500">#9E9E9E</color>
 </resources>
