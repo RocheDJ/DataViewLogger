@@ -20,6 +20,7 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,13 +38,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.activities.QRScanActivity
+import ie.djroche.datalogviewer.auth.LoggedInViewModel
+import ie.djroche.datalogviewer.models.SiteKPIModel
+import java.util.Locale
 
 class SiteFragment : Fragment(), SiteClickListener {
     private var _fragBinding: FragmentSiteBinding? = null
     private val fragBinding get() = _fragBinding!!
     private val siteViewModel : SiteViewModel by activityViewModels()
     lateinit var loader : AlertDialog
-
+    lateinit var loggedInViewModel : LoggedInViewModel
 
     // register for QR Scan result
     // https://stackoverflow.com/questions/14785806/android-how-to-make-an-activity-return-results-to-the-activity-which-calls-it
@@ -102,10 +106,30 @@ class SiteFragment : Fragment(), SiteClickListener {
             Timber.i("QR Scan Pressed from site")
             showScanQR()
         }
-
+        // listen for the fragment button press
+        fragBinding.fabAddSite.setOnClickListener {
+            Timber.i("Add Site Clicked")
+            addNewSite()
+        }
+        // link to the logged in view model
+        loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
         return root
     }
     /*------------------------------------------------------------------------------------------------*/
+
+    private fun addNewSite()
+    {
+        val myNewSite: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
+        myNewSite.description= "New Site"
+        myNewSite.userid = loggedInViewModel.liveUser.value!!.id.toString()
+        myNewSite.data.add(SiteKPIModel())
+        siteViewModel.addSite(myNewSite.copy())
+
+        fragBinding.swiperefresh.isRefreshing = true
+        showLoader(loader,"Downloading Site List")
+        siteViewModel.load()
+
+    }
     private fun setupMenu() {
         setHasOptionsMenu(true)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
@@ -217,7 +241,7 @@ class SiteFragment : Fragment(), SiteClickListener {
         // running a for loop to compare elements.
         for (item in siteList!!) {
             // checking if the entered string matched with any item of our recycler view.
-            if (item.description.toLowerCase().contains(text.toLowerCase())) {
+            if (item.description.lowercase(Locale.ROOT).contains(text.lowercase(Locale.ROOT))) {
                 // if the item is matched we are
                 // adding it to our filtered list.
                 filteredList.add(item)

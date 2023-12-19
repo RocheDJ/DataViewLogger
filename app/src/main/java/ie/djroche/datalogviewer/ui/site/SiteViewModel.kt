@@ -65,9 +65,20 @@ class SiteViewModel : ViewModel() {
             Timber.i("Site Delete Error : $e.message")
         }
     }
+
+    fun addSite( site: SiteModel) {
+        try {
+            SiteManager.create(site)
+
+            Timber.i("Site Add Called")
+        } catch (e: Exception) {
+            Timber.i("Site Add Error : $e.message")
+        }
+    }
     //-----------------------------------------------------------------------------
     fun clearSite()
     {
         _site.value!!.id= null!!
     }
+
 }
