@@ -120,7 +120,8 @@ class KPIFragment : Fragment(), KPIGridClickListener {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if(menuItem.itemId == R.id.item_Back){
-                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.action_KPIFragment_to_siteFragment)
+
                     return true
                 }
                 return NavigationUI.onNavDestinationSelected(

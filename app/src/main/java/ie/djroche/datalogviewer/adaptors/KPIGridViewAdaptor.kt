@@ -24,10 +24,7 @@ internal class KPIGridViewAdaptor(private val kpiList: List<SiteKPIModel>,
     // in base adapter class we are creating variables
     // for layout inflater, course image view and course text view.
     private var layoutInflater: LayoutInflater? = null
-    private lateinit var titleTV: TextView
     private lateinit var iconIV: ImageView
-    private lateinit var valueTV: TextView
-    private lateinit var unitTV: TextView
     // below method is use to return the count of course list
     override fun getCount(): Int {
         return kpiList.size

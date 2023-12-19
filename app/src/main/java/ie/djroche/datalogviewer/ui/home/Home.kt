@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -20,7 +21,9 @@ import ie.djroche.datalogviewer.auth.Login
 import ie.djroche.datalogviewer.databinding.HomeBinding
 import ie.djroche.datalogviewer.databinding.NavHeaderBinding
 import ie.djroche.datalogviewer.main.MainApp
+import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
+import ie.djroche.datalogviewer.ui.site.SiteViewModel
 import timber.log.Timber
 
 
@@ -30,6 +33,9 @@ class Home : AppCompatActivity() {
     private lateinit var homeBinding: HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var loggedInViewModel : LoggedInViewModel
+    // site view model to enable shwing selected site on nav drawer
+    private lateinit var siteViewModel : SiteViewModel
+
     //ToDo: Delete the reference to app when finished
     lateinit var app: MainApp
 
@@ -71,6 +77,7 @@ class Home : AppCompatActivity() {
 
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
 
+        siteViewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
         // if the logged in user changes update the nave headder
         loggedInViewModel.liveUser.observe(this, Observer { liveUser ->
             if (liveUser != null)
@@ -83,7 +90,6 @@ class Home : AppCompatActivity() {
                 startActivity(Intent(this, Login::class.java))
             }
         })
-
         Timber.i("Home Activity started...")
     }
     /* ----------------------------------------------------------------------------------------------- */
@@ -93,14 +99,30 @@ class Home : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    override fun onRestart() {
+        super.onRestart()
 
+        siteViewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
+        // if the selecteed site changes the update the nav drawer
+        siteViewModel.observableSite.observe(this, Observer { liveSite ->
+            if (liveSite != null)
+                updateNavHeader_Site(siteViewModel.liveSite.value!!)
+        })
+
+    }
     /* ----------------------------------------------------------------------------------------------- */
     private fun updateNavHeader(currentUser: UserModel) {
         var headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
         navHeaderBinding.tvUser.text = currentUser.email
-    }
 
+    }
+    /* ----------------------------------------------------------------------------------------------- */
+    private fun updateNavHeader_Site(currentSite: SiteModel) {
+        var headerView = homeBinding.navView.getHeaderView(0)
+        navHeaderBinding = NavHeaderBinding.bind(headerView)
+        navHeaderBinding.tvSite.text = currentSite.description
+    }
     //-------------------- signOut called from nav_drawer_menu.xml
     fun signOut() {
         loggedInViewModel.logOut()

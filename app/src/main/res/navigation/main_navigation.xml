@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/aboutFragment"
         android:name="ie.djroche.datalogviewer.ui.about.AboutFragment"
-        android:label="fragment_about"
+        android:label="About"
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/siteFragment"
@@ -25,8 +25,8 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="ie.djroche.datalogviewer.ui.detail.DetailFragment"
-        android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" >
+        android:label="Details"
+        tools:layout="@layout/fragment_detail">
         <action
             android:id="@+id/action_detailFragment_to_KPIFragment"
             app:destination="@id/kpiFragment"

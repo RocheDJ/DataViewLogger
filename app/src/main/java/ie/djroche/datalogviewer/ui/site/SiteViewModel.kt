@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ie.djroche.datalogviewer.models.SiteManager
 import ie.djroche.datalogviewer.models.SiteModel
+import ie.djroche.datalogviewer.models.UserModel
 import timber.log.Timber
 import java.lang.Exception
 
@@ -18,8 +19,11 @@ class SiteViewModel : ViewModel() {
         get() = siteList
 
     private var _site =
-        MutableLiveData<SiteModel>()
-    val observableSite: LiveData<SiteModel>
+        MutableLiveData<SiteModel?>()
+
+    var liveSite = MutableLiveData<SiteModel?>()
+
+    val observableSite: MutableLiveData<SiteModel?>
         get() = _site
 
     //-----------------------------------------------------------------------------
@@ -39,8 +43,12 @@ class SiteViewModel : ViewModel() {
     //-----------------------------------------------------------------------------
     fun findByQR(userid: String, id: String){
         try {
-             _site.value = SiteManager.findByQR(id)
 
+            val mySite = SiteManager.findByQR(id)
+            if (mySite!=null){
+                liveSite.postValue(mySite)
+                _site.value=mySite
+            }
             Timber.i("Site findByQR Called")
         } catch (e: Exception) {
             Timber.i("Site findByQR Error : $e.message")

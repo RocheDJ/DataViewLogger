@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
         val userText : String = getString(R.string.user_name) + app.user.firstName + " "+ app.user.lastName
         navViewHeaderBinding.tvUser.text = userText
         navViewHeaderBinding.tvTitle.text =getString(R.string.app_name)
+
     }
     // ------------------   Process the Menu Items events  ---------------------------------------
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

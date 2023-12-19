@@ -132,6 +132,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     override fun onSiteClick(site: SiteModel) {
         Timber.i("Site clicked " + site.description)
         // note for this to work need androidx.navigation.safeargs in both gradle files
+        siteViewModel.findByQR("1234",site.qrcode)
         selectSite(site)
     }
 
@@ -139,7 +140,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*---------------------------------------------------------------------------------------------*/
     override fun  onResume(){
         super.onResume()
-
+/*
         // observer the selected site changed
         siteViewModel.observableSite.observe(viewLifecycleOwner, Observer {
                 site ->
@@ -147,6 +148,8 @@ class SiteFragment : Fragment(), SiteClickListener {
                 selectSite(it)
             }
         })
+
+ */
     }
     /*---------------------------------------------------------------------------------------------*/
     private fun showScanQR() {
@@ -157,9 +160,10 @@ class SiteFragment : Fragment(), SiteClickListener {
     private fun processQRScan(qrCode:String){
         siteViewModel.findByQR("1234",qrCode)
     }
-
+    /*---------------------------------------------------------------------------------------------*/
     private fun selectSite(site: SiteModel){
         val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
+
         findNavController().navigate(action)
     }
 }
