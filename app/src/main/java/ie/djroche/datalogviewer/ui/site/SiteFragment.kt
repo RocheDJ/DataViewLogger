@@ -6,12 +6,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +34,8 @@ import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
 import timber.log.Timber
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.activities.QRScanActivity
 
 class SiteFragment : Fragment(), SiteClickListener {
@@ -32,6 +43,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     private val fragBinding get() = _fragBinding!!
     private val siteViewModel : SiteViewModel by activityViewModels()
     lateinit var loader : AlertDialog
+
 
     // register for QR Scan result
     // https://stackoverflow.com/questions/14785806/android-how-to-make-an-activity-return-results-to-the-activity-which-calls-it
@@ -45,17 +57,18 @@ class SiteFragment : Fragment(), SiteClickListener {
                 Timber.i("QR Observer registerForActivityResult = $scannedQR")
             }
         }
-
+//-----------------------------------------------------------------------------------------------
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _fragBinding = FragmentSiteBinding.inflate(inflater, container, false)
         val root = fragBinding.root
-
+        setupMenu()
         loader = createLoader(requireActivity())
 
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
+
 
         //  the site List info
         showLoader(loader,"Downloading Sites")
@@ -77,15 +90,12 @@ class SiteFragment : Fragment(), SiteClickListener {
                 adapter.removeAt(viewHolder.adapterPosition)
                 siteViewModel.delete(
                     "123",(viewHolder.itemView.tag as SiteModel).id)
-
                 hideLoader(loader)
             }
         }
         // Delete
         val itemTouchDeleteHelper = ItemTouchHelper(swipeDeleteHandler)
         itemTouchDeleteHelper.attachToRecyclerView(fragBinding.recyclerView)
-
-
 
         // listen for the fragment button press
         fragBinding.fabScan.setOnClickListener {
@@ -94,6 +104,47 @@ class SiteFragment : Fragment(), SiteClickListener {
         }
 
         return root
+    }
+    /*------------------------------------------------------------------------------------------------*/
+    private fun setupMenu() {
+        setHasOptionsMenu(true)
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_search, menu)
+                // below line is to get our menu item.
+                val searchItem: MenuItem = menu.findItem(R.id.item_Search)
+
+                val searchView: SearchView = searchItem.getActionView() as SearchView
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+                    android.widget.SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(p0: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(msg: String): Boolean {
+                        // inside on query text change method we are
+                        // calling a method to filter our recycler view.
+                        filter(msg)
+                        return false
+                    }
+                })
+
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if(menuItem.itemId == R.id.item_Search){
+                    Timber.i("Search clicked ")
+                    return true
+                }
+                return NavigationUI.onNavDestinationSelected(
+                    menuItem, requireView().findNavController())
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
     /*------------------------------------------------------------------------------------------------*/
     fun setSwipeRefresh() {
@@ -140,16 +191,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*---------------------------------------------------------------------------------------------*/
     override fun  onResume(){
         super.onResume()
-/*
-        // observer the selected site changed
-        siteViewModel.observableSite.observe(viewLifecycleOwner, Observer {
-                site ->
-            site?.let {
-                selectSite(it)
-            }
-        })
 
- */
     }
     /*---------------------------------------------------------------------------------------------*/
     private fun showScanQR() {
@@ -163,7 +205,33 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*---------------------------------------------------------------------------------------------*/
     private fun selectSite(site: SiteModel){
         val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
-
         findNavController().navigate(action)
     }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private fun filter(text: String) {
+        // creating a new array list to filter our data.
+        val filteredList: ArrayList<SiteModel> = ArrayList()
+        val adapter = fragBinding.recyclerView.adapter as SiteAdaptor
+        val siteList = siteViewModel.observableSiteList.value
+        // running a for loop to compare elements.
+        for (item in siteList!!) {
+            // checking if the entered string matched with any item of our recycler view.
+            if (item.description.toLowerCase().contains(text.toLowerCase())) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                filteredList.add(item)
+            }
+        }
+        if (filteredList.isEmpty()) {
+            // if no item is added in filtered list we are
+            // displaying a toast message as no data found.
+            Toast.makeText(this.context, "No Data Found..", Toast.LENGTH_SHORT).show()
+        } else {
+            // at last we are passing that filtered
+            // list to our adapter class.
+            adapter.filterList(filteredList)
+        }
+    }
+
 }

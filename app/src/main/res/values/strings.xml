@@ -96,4 +96,5 @@
     <string name="send_link">Send Link</string>
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email</string>
+    <string name="search">Search</string>
 </resources>

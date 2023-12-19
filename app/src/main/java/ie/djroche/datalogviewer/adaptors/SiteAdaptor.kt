@@ -33,7 +33,16 @@ class SiteAdaptor constructor(private var sites: ArrayList<SiteModel>,
         sites.removeAt(position)
         notifyItemRemoved(position)
     }
-
+    //----------------------------------------------
+    // method for filtering our recyclerview items.
+    fun filterList(filterlist: ArrayList<SiteModel>) {
+        // below line is to add our filtered
+        // list in our course array list.
+        sites = filterlist
+        // below line is to notify our adapter
+        // as change in recycler view data.
+        notifyDataSetChanged()
+    }
     //------------------------------------------
     class MainHolder(private val binding : CardSiteBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -43,6 +52,7 @@ class SiteAdaptor constructor(private var sites: ArrayList<SiteModel>,
             binding.siteImageView.setImageResource(R.drawable.industry40)
             binding.root.setOnClickListener { listener.onSiteClick(site) }
         }
+
     }
 
     }

@@ -50,7 +50,6 @@ class Home : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar) // in app_bar_home
         setSupportActionBar(toolbar)
         toolbar.title = title
-
         val navController = findNavController(R.id.nav_host_fragment)
 
         appBarConfiguration = AppBarConfiguration(setOf(

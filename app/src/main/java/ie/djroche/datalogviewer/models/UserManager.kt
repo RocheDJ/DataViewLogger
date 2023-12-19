@@ -70,8 +70,9 @@ object UserManager:UserStore {
     override fun register(email: String?, password: String?): UserModel? {
         deserialize()
         val newUser :UserModel = UserModel()
+        val encryptedPassword :String = encryptString(input=password!!)
         newUser.email = email!!
-        newUser.password = password!! // ToDo:add encryption
+        newUser.password = encryptedPassword
         users.add(newUser)
         serialize()
         return newUser
