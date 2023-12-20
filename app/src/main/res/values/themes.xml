@@ -11,8 +11,8 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorTeal</item>
-        <item name="android:statusBarColor">@color/colorTeal</item>
+        <item name="colorAccent">@color/color_Teal</item>
+        <item name="android:statusBarColor">@color/color_Teal</item>
     </style>
     <style name="ThemeOverlay.MyTextDetail" parent="Theme.DataLogViewer">
         <item name="android:layout_width">wrap_content</item>

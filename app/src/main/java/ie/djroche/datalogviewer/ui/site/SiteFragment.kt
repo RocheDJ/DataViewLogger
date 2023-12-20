@@ -41,6 +41,8 @@ import ie.djroche.datalogviewer.activities.QRScanActivity
 import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import java.util.Locale
+import ie.djroche.datalogviewer.adaptors.SiteItemDecoration
+import ie.djroche.datalogviewer.databinding.CardSiteBinding
 
 class SiteFragment : Fragment(), SiteClickListener {
     private var _fragBinding: FragmentSiteBinding? = null
@@ -48,6 +50,7 @@ class SiteFragment : Fragment(), SiteClickListener {
     private val siteViewModel : SiteViewModel by activityViewModels()
     lateinit var loader : AlertDialog
     lateinit var loggedInViewModel : LoggedInViewModel
+    lateinit var selectedSiteCard : CardSiteBinding
 
     // register for QR Scan result
     // https://stackoverflow.com/questions/14785806/android-how-to-make-an-activity-return-results-to-the-activity-which-calls-it
@@ -70,7 +73,8 @@ class SiteFragment : Fragment(), SiteClickListener {
         val root = fragBinding.root
         setupMenu()
         loader = createLoader(requireActivity())
-
+        // decoration for highlighting selected site
+        fragBinding.recyclerView.addItemDecoration( SiteItemDecoration(fragBinding.root.context))
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
 
@@ -86,6 +90,8 @@ class SiteFragment : Fragment(), SiteClickListener {
         })
 
         setSwipeRefresh()
+
+
         // swipe to delete
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -130,6 +136,7 @@ class SiteFragment : Fragment(), SiteClickListener {
         siteViewModel.load()
 
     }
+    /*------------------------------------------------------------------------------------------------*/
     private fun setupMenu() {
         setHasOptionsMenu(true)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
@@ -188,12 +195,20 @@ class SiteFragment : Fragment(), SiteClickListener {
     private fun render(siteList: ArrayList<SiteModel>) {
 
         fragBinding.recyclerView.adapter = SiteAdaptor(siteList,this)
+
         if (siteList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
             fragBinding.sitesNotFound.visibility = View.VISIBLE
         } else {
             fragBinding.recyclerView.visibility = View.VISIBLE
             fragBinding.sitesNotFound.visibility = View.GONE
+
+            // if a site is selected highlight it in the list
+            val adapter = fragBinding.recyclerView.adapter as SiteAdaptor
+            if (siteViewModel.liveSite.value != null){
+                adapter.highlightSite(siteViewModel.liveSite.value!!,this.requireView())
+            }
+
         }
 
     }
@@ -209,6 +224,7 @@ class SiteFragment : Fragment(), SiteClickListener {
         // note for this to work need androidx.navigation.safeargs in both gradle files
         siteViewModel.findByQR("1234",site.qrcode)
         selectSite(site)
+
     }
 
 
@@ -228,6 +244,8 @@ class SiteFragment : Fragment(), SiteClickListener {
     }
     /*---------------------------------------------------------------------------------------------*/
     private fun selectSite(site: SiteModel){
+
+
         val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
         findNavController().navigate(action)
     }

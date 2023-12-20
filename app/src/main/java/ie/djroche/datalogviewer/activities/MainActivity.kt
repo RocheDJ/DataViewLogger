@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -28,7 +29,7 @@ import ie.djroche.datalogviewer.models.SiteModel
 import timber.log.Timber
 //------------------------------------------------------------------------------------------------
 class MainActivity : AppCompatActivity(), SiteClickListener ,
-    NavigationView.OnNavigationItemSelectedListener  {
+    NavigationView.OnNavigationItemSelectedListener  { // ------------------------------END Of Class ---------------------------------------------------
 
     lateinit var app: MainApp
     private lateinit var acMainBinding: ActivityMainBinding
@@ -339,5 +340,6 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
     }
 
 
-} // ------------------------------END Of Class ---------------------------------------------------
+
+}
 
