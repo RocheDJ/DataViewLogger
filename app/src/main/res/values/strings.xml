@@ -97,4 +97,10 @@
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email</string>
     <string name="search">Search</string>
+    <string name="title_activity_setup">SetupActivity</string>
+    <string name="firebase">Firebase</string>
+    <string name="local">Local JSON</string>
+    <string name="db_type">Database Type</string>
+    <string name="api_endpoint">Api Endpoint</string>
+    <string name="btn_save">Save</string>
 </resources>

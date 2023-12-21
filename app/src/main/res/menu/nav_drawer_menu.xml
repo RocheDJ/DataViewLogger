@@ -20,25 +20,16 @@
             android:id="@+id/detailFragment"
             android:icon="@drawable/ic_trending_foreground"
             android:title="@string/nav_details" />
-
+        <item
+            android:id="@+id/setupFragment"
+            android:icon="@drawable/ic_button_gear"
+            android:title="@string/nav_settings" />
         <item
             android:id="@+id/aboutFragment"
             android:icon="@drawable/baseline_info_40"
             android:title="@string/nav_about" />
     </group>
 
-    <item android:title="@string/nav_general">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_button_gear"
-                android:title="@string/nav_settings" />
-            <item
-                android:id="@+id/nav_addSite"
-                android:icon="@drawable/ic_add_24"
-                android:title="@string/add_Site" />
-        </menu>
-    </item>
 
     <!-- id is the key used in onNavigationItemSelected -->
     <item android:title="@string/nav_account">
@@ -52,10 +43,6 @@
                 android:icon="@drawable/ic_menu_logout"
                 android:onClick="signOut"
                 android:title="@string/nav_logout" />
-            <item
-                android:id="@+id/nav_login"
-                android:icon="@drawable/ic_menu_login"
-                android:title="@string/nav_login" />
         </menu>
     </item>
 

@@ -6,7 +6,6 @@ import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import ie.djroche.datalogviewer.activities.app
 import ie.djroche.datalogviewer.utils.encryptString
 import timber.log.Timber
 import java.io.File
@@ -25,11 +24,11 @@ object UserManager:UserStore {
     init {
         try {
             loggedOut.postValue(true)
-            preferences = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
+            //preferences = PreferenceManager.getDefaultSharedPreferences(this)
             // load the last user
-            val lastUser : UserModel? = findUserById(preferences.getString("UserID","--").toString())
+          //  val lastUser : UserModel? = findUserById(preferences.getString("UserID","--").toString())
 
-            liveUser.value = lastUser!!
+          //  liveUser.value = lastUser!!
         } catch ( e :Exception){
             Timber.i("UserManager Init Error " + e.message)
         }

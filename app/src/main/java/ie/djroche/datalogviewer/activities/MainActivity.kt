@@ -147,22 +147,12 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
     // -------------------------------------------------------------------------------------------
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_settings -> {
-                Timber.i( "nav_settings clicked")
-                showSettings()
-            }
+
             R.id.nav_logout -> {
                 Timber.i( "nav_logout clicked")
                 LogOut()
             }
-            R.id.nav_login -> {
-                Timber.i("nav_login clicked")
-                showLogin()
-            }
-            R.id.nav_addSite ->{
-                Timber.i("nav_addSite clicked")
-                AddSite()
-            }
+
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -189,8 +179,7 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
     private fun showLogin() {
         Timber.i("Show Login selected")
         //launch the KPI page
-        val launcherIntent = Intent(this, LoginActivity::class.java)
-        getResultLogin.launch(launcherIntent)
+
     }
     // --------------------------------------------------------------------------------------------
     private fun LogOut() {
@@ -203,9 +192,7 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
     private fun showGrid() {
         Timber.i("Show grid selected")
         try{
-            //launch the KPI page
-            val launcherIntent = Intent(this, KpiListActivity::class.java)
-            getResult.launch(launcherIntent)
+
         }catch (e: Exception) {
             Timber.i("showGrid Error " + e.message)
         }
@@ -223,8 +210,7 @@ class MainActivity : AppCompatActivity(), SiteClickListener ,
         Timber.i("DataLogViewer Settings selected")
         app.qrCode = "-"
         //launch the KPI page
-        val launcherIntent = Intent(this, SettingsActivity::class.java)
-        getResultSettings.launch(launcherIntent)
+
     }
     // --------------------------------------------------------------------------------------------
     override fun onSiteClick(site: SiteModel) {

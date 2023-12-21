@@ -3,18 +3,18 @@ package ie.djroche.datalogviewer.ui.home
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.service.autofill.UserData
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.auth.Login
@@ -23,6 +23,7 @@ import ie.djroche.datalogviewer.databinding.NavHeaderBinding
 import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
+
 import ie.djroche.datalogviewer.ui.site.SiteViewModel
 import timber.log.Timber
 
@@ -32,9 +33,10 @@ class Home : AppCompatActivity() {
     private lateinit var navHeaderBinding: NavHeaderBinding
     private lateinit var homeBinding: HomeBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var loggedInViewModel : LoggedInViewModel
+    private lateinit var loggedInViewModel: LoggedInViewModel
+
     // site view model to enable shwing selected site on nav drawer
-    private lateinit var siteViewModel : SiteViewModel
+    private lateinit var siteViewModel: SiteViewModel
 
     //ToDo: Delete the reference to app when finished
     lateinit var app: MainApp
@@ -52,9 +54,12 @@ class Home : AppCompatActivity() {
         toolbar.title = title
         val navController = findNavController(R.id.nav_host_fragment)
 
-        appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.aboutFragment, R.id.detailFragment, R.id.siteFragment,
-            R.id.kpiFragment), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.aboutFragment, R.id.detailFragment, R.id.siteFragment,
+                R.id.kpiFragment
+            ), drawerLayout
+        )
 
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -72,7 +77,7 @@ class Home : AppCompatActivity() {
     /* ----------------------------------------------------------------------------------------------- */
     public override fun onStart() {
         super.onStart()
-       // updateNavHeader(app.user)
+        // updateNavHeader(app.user)
 
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
 
@@ -91,6 +96,7 @@ class Home : AppCompatActivity() {
         })
         Timber.i("Home Activity started...")
     }
+
     /* ----------------------------------------------------------------------------------------------- */
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
@@ -109,6 +115,7 @@ class Home : AppCompatActivity() {
         })
 
     }
+
     /* ----------------------------------------------------------------------------------------------- */
     private fun updateNavHeader(currentUser: UserModel) {
         var headerView = homeBinding.navView.getHeaderView(0)
@@ -116,14 +123,15 @@ class Home : AppCompatActivity() {
         navHeaderBinding.tvUser.text = currentUser.email
 
     }
+
     /* ----------------------------------------------------------------------------------------------- */
     private fun updateNavHeader_Site(currentSite: SiteModel) {
         var headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
         navHeaderBinding.tvSite.text = currentSite.description
     }
-    //-------------------- signOut called from nav_drawer_menu.xml
-    fun signOut() {
+
+    private fun signOut() {
         loggedInViewModel.logOut()
         //Launch Login activity and clear the back stack to stop navigating back to the Home activity
         val intent = Intent(this, Login::class.java)
@@ -131,6 +139,9 @@ class Home : AppCompatActivity() {
         startActivity(intent)
     }
 
+
+
+    //-------------------- signOut called from nav_drawer_menu.xml
     fun signOut(item: MenuItem) {
         signOut()
     }

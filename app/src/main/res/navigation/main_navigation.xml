@@ -20,6 +20,11 @@
             app:destination="@id/kpiFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_siteFragment_to_setupFragment"
+            app:destination="@id/setupFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
 
     </fragment>
     <fragment
@@ -58,4 +63,15 @@
         android:id="@+id/login"
         android:name="ie.djroche.datalogviewer.auth.Login"
         android:label="Login" />
+    <fragment
+        android:id="@+id/setupFragment"
+        android:name="ie.djroche.datalogviewer.ui.setup.SetupFragment"
+        android:label="Setup"
+        tools:layout="@layout/fragment_setup">
+        <action
+            android:id="@+id/action_setupFragment_to_siteFragment"
+            app:destination="@id/siteFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
 </navigation>
