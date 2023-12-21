@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "216870012583",
+    "project_id": "datalogviewer",
+    "storage_bucket": "datalogviewer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216870012583:android:e49d6351abb6e20faa3d82",
+        "android_client_info": {
+          "package_name": "ie.djroche.datalogviewer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJWw0tPdjU69zCUs_vaARYXW2qRluhKhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

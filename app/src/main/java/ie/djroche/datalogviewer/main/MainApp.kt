@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
-import ie.djroche.datalogviewer.models.SiteJSONStore
+//import ie.djroche.datalogviewer.models.SiteJSONStore
 import ie.djroche.datalogviewer.models.SiteStore
-import ie.djroche.datalogviewer.models.UserJSONStore
+//import ie.djroche.datalogviewer.models.UserJSONStore
 import ie.djroche.datalogviewer.models.UserModel
 import ie.djroche.datalogviewer.models.UserStore
 import timber.log.Timber
@@ -49,19 +49,19 @@ class MainApp : Application()  {
        // check if we are using JSON Store or API
         xLoggedin =false
         // load and associate user data
-        users = UserJSONStore(applicationContext)
+       // users = UserJSONStore(applicationContext)
         // get the logged in user username is not set then create it from user file
         val id = preferences.getString("UserID",null)
         if (id != null){
             //read the user details for the user
-            user = users.findUserById(id)!!
+           // user = users.findUserById(id)!!
         } else {
             // if no user defined use a defalt user
-            user = users.findUserByEmail("homer@simpson.com")!!
-            SaveCurrentUser()
+          //  user = users.findUserByEmail("homer@simpson.com")!!
+       //     SaveCurrentUser()
         }
         val  path = applicationContext.filesDir.absolutePath
-        LoadSitesForCurrentUser()
+     //   LoadSitesForCurrentUser()
         // create the http queue
         httpQueue = Volley.newRequestQueue(this)
         i("DataLogViewer started")
@@ -71,10 +71,10 @@ class MainApp : Application()  {
     fun LoadSitesForCurrentUser(){
      // load the sites for the user
         if (user.id != null) {
-            sites = SiteJSONStore(applicationContext,user.id.toString())
+         //   sites = SiteJSONStore(applicationContext,user.id.toString())
 
         } else {
-            sites = SiteJSONStore(applicationContext,"-")
+        //    sites = SiteJSONStore(applicationContext,"-")
         }
     }
 

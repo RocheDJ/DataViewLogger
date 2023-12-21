@@ -9,6 +9,13 @@ import java.io.File
 import java.lang.reflect.Type
 
 
+// JSON model decelerations
+val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
+val listKpiType: Type = object : TypeToken<ArrayList<SiteKPIModel>>() {}.type
+val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
+    .create()
+const val JSON_FILE = "sites.json"
+
 object SiteManager : SiteStore {
     // temp site manager for jason local file
     // reads file on each call ..

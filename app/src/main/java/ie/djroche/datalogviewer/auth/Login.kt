@@ -10,8 +10,6 @@ import androidx.lifecycle.Observer
 
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.databinding.LoginBinding
-import ie.djroche.datalogviewer.models.UserManager
-import ie.djroche.datalogviewer.ui.about.AboutViewModel
 import ie.djroche.datalogviewer.ui.home.Home
 import timber.log.Timber
 
