@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -31,6 +32,7 @@ import ie.djroche.datalogviewer.adaptors.SiteAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteClickListener
 import ie.djroche.datalogviewer.adaptors.SiteItemDecoration
 import ie.djroche.datalogviewer.auth.LoggedInViewModel
+import ie.djroche.datalogviewer.auth.LoginRegisterViewModel
 import ie.djroche.datalogviewer.databinding.FragmentSiteBinding
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
@@ -44,7 +46,8 @@ import java.util.Locale
 class SiteFragment : Fragment(), SiteClickListener {
     private var _fragBinding: FragmentSiteBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private val siteViewModel: SiteViewModel by activityViewModels()
+    //private val siteViewModel: SiteViewModel by activityViewModels()
+    private lateinit var siteViewModel: SiteViewModel
     private val loggedInViewModel: LoggedInViewModel by activityViewModels()
     lateinit var loader: AlertDialog
     private var allowQrSelect: Boolean = false // toggle to stop navigation to kpi fragment twice
@@ -76,6 +79,8 @@ class SiteFragment : Fragment(), SiteClickListener {
         // decoration for highlighting selected site
         fragBinding.recyclerView.addItemDecoration(SiteItemDecoration(fragBinding.root.context))
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
+        // load the view models
+        siteViewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
 
         //download list of sites on user change
         showLoader(loader, "Downloading Sites")
@@ -86,8 +91,6 @@ class SiteFragment : Fragment(), SiteClickListener {
             }
         })
 
-        //  the site List info
-        showLoader(loader, "Downloading Sites")
         loggedInViewModel.liveUser.value = loggedInViewModel.liveUser.value
         siteViewModel.observableSiteList.observe(viewLifecycleOwner, Observer { sites ->
             sites?.let {
@@ -135,7 +138,6 @@ class SiteFragment : Fragment(), SiteClickListener {
                         selectSite(site)
                     }
                 }
-
             })
         return root
     }
@@ -144,14 +146,12 @@ class SiteFragment : Fragment(), SiteClickListener {
     private fun addNewSite() {
         val myNewSite: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
         myNewSite.description = "New Site"
-        myNewSite.userid = loggedInViewModel.liveUser.value!!.id.toString()
+        myNewSite.userid = loggedInViewModel.liveUser.value!!.uid.toString()
         myNewSite.data.add(SiteKPIModel())
         siteViewModel.addSite(myNewSite.copy())
-
         fragBinding.swiperefresh.isRefreshing = true
         showLoader(loader, "Downloading Site List")
         siteViewModel.load()
-
     }
 
     /*-------------------------------------------------------------------------------------------*/
@@ -242,9 +242,11 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*-------------------------------------------------------------------------------------------*/
     override fun onSiteClick(site: SiteModel) {
         Timber.i("Site clicked " + site.description)
-        // note for this to work need androidx.navigation.safeargs in both gradle files
-        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.id.toString(), site.qrcode)
         allowQrSelect = true
+        // note for this to work need androidx.navigation.safeargs in both gradle files
+        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.uid.toString(),
+            site.qrcode)
+
     }
 
 
@@ -273,7 +275,7 @@ class SiteFragment : Fragment(), SiteClickListener {
 
     /*-------------------------------------------------------------------------------------------*/
     private fun processQRScan(qrCode: String) {
-        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.id.toString(), qrCode)
+        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.uid.toString(), qrCode)
         allowQrSelect = true
     }
 

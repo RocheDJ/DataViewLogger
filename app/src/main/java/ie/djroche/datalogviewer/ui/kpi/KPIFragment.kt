@@ -22,14 +22,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.activities.QRScanActivity
 import ie.djroche.datalogviewer.adaptors.KPIGridClickListener
 import ie.djroche.datalogviewer.adaptors.KPIGridViewAdaptor
+import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.databinding.FragmentKPIBinding
 import ie.djroche.datalogviewer.models.SiteKPIModel
-import ie.djroche.datalogviewer.models.gsonBuilder
 import ie.djroche.datalogviewer.models.listKpiType
+import ie.djroche.datalogviewer.ui.site.SiteViewModel
 import ie.djroche.datalogviewer.utils.createLoader
 import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
@@ -38,7 +41,8 @@ import timber.log.Timber
 class KPIFragment : Fragment(), KPIGridClickListener {
     private var _fragBinding: FragmentKPIBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private val kpiViewModel: KPIViewModel by activityViewModels()
+    private lateinit var kpiViewModel: KPIViewModel
+    private val loggedInViewModel: LoggedInViewModel by activityViewModels()
     lateinit var loader: AlertDialog
     private val args by navArgs<KPIFragmentArgs>()
 
@@ -62,18 +66,22 @@ class KPIFragment : Fragment(), KPIGridClickListener {
         setupMenu()
         loader = createLoader(requireActivity())
         showLoader(loader, "Downloading KPI List")
+        // load the view models
+        kpiViewModel = ViewModelProvider(this).get(KPIViewModel::class.java)
 
         kpiViewModel.observableKPIList.observe(viewLifecycleOwner, Observer { kpis ->
             kpis?.let {
-                hideLoader(loader)
                 render(kpis as ArrayList<SiteKPIModel>)
+                hideLoader(loader)
             }
         })
 
-
         // Update Button to update site description
         fragBinding.updateSiteButton.setOnClickListener {
-            kpiViewModel.updateSiteDescription("1234",args.siteID,fragBinding.siteDescriptionVM.toString())
+            kpiViewModel.updateSiteDescription(loggedInViewModel.liveUser.value!!.uid.toString()
+                                                ,args.siteID,
+                                                    fragBinding.siteDescriptionVM.toString())
+
             findNavController().navigateUp() // go back to site list
         }
 
@@ -81,6 +89,7 @@ class KPIFragment : Fragment(), KPIGridClickListener {
         fragBinding.addKPIButton.setOnClickListener {
             showScanQR()
         }
+
         return root
     }
 
@@ -144,12 +153,14 @@ class KPIFragment : Fragment(), KPIGridClickListener {
     private fun addKPI(kpiJSONString: String) {
         try {
             var addKPIList: MutableList<SiteKPIModel> = mutableListOf<SiteKPIModel>()
+            val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
+                .create()
             addKPIList = gsonBuilder.fromJson(kpiJSONString, listKpiType)
             for (kpi in addKPIList) {
-                kpiViewModel.addKPI("1234",  args.siteID,kpi)
+                kpiViewModel.addKPI(loggedInViewModel.liveUser.value!!.uid.toString(),  args.siteID,kpi)
             }
         } catch (e: Exception) {
-            Timber.i("addKPI Error " + e.message)
+            Timber.i("Add KPI Error " + e.message)
         }
     }
     // -------------------------- When view is resumed from idle ----------------------------------
@@ -158,7 +169,7 @@ class KPIFragment : Fragment(), KPIGridClickListener {
         try {
             if (!args.siteID.isEmpty()) {
                 kpiViewModel.getKPIs(
-                    "12345",
+                    loggedInViewModel.liveUser.value!!.uid.toString(),
                     args.siteID
                 )
                 fragBinding.siteDescriptionVM = args.siteDescription

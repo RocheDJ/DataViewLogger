@@ -1,22 +1,27 @@
 package ie.djroche.datalogviewer.utils
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import ie.djroche.datalogviewer.models.JSON_FILE
 import ie.djroche.datalogviewer.models.JSON_USERFILE
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
-import ie.djroche.datalogviewer.models.gsonBuilder
-import ie.djroche.datalogviewer.models.listType
 import timber.log.Timber
+import java.lang.reflect.Type
 import java.math.BigInteger
 import java.security.MessageDigest
 
 
-fun loadDummyUserJSONData(context: Context) {
+fun loadDummyJSONData(context: Context) {
     var dummyUsers = mutableListOf<UserModel>()
     var myNewUser_1: UserModel = UserModel()
     var myNewUser_2: UserModel = UserModel()
+    val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
+        .create()
+    val listType: Type = object : TypeToken<ArrayList<UserModel>>() {}.type
     try {
         myNewUser_1.email = "homer@simpson.com"
         myNewUser_1.firstName = "homer"
@@ -24,6 +29,8 @@ fun loadDummyUserJSONData(context: Context) {
         myNewUser_1.password = encryptString("secret")
 
         dummyUsers.add(myNewUser_1.copy())
+
+        loadDummyJSONSiteData(context,myNewUser_1.uid!!)
 
         myNewUser_2.email = "marge@simpson.com"
         myNewUser_2.firstName = "marge"
@@ -44,6 +51,9 @@ fun loadDummyJSONSiteData(context: Context,userID :String) {
     var myNewSite: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
     var myNewSite1: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
     var dummySites = mutableListOf<SiteModel>()
+    val gsonBuilder: Gson = GsonBuilder().setPrettyPrinting()
+        .create()
+    val listType: Type = object : TypeToken<ArrayList<SiteModel>>() {}.type
     var id: String
     try {
         // create the site data for 1st site

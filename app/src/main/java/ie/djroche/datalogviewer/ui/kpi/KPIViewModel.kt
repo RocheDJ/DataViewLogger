@@ -1,15 +1,18 @@
 package ie.djroche.datalogviewer.ui.kpi
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import ie.djroche.datalogviewer.main.MainApp
+
 import ie.djroche.datalogviewer.models.SiteKPIModel
-import ie.djroche.datalogviewer.models.SiteManager
+
 import timber.log.Timber
 import java.lang.Exception
 
 
-class KPIViewModel : ViewModel() {
+class KPIViewModel (app: Application):  AndroidViewModel(app) {
     // declare the list of sites
     private var kpiList =
         MutableLiveData<List<SiteKPIModel>>()
@@ -24,10 +27,11 @@ class KPIViewModel : ViewModel() {
     val observableSiteDescription :LiveData<String>
         get() = _SiteDescription
 
+    var mainApp: MainApp =  app as MainApp
     //-----------------------------------------------------------------------------
     fun getKPIs(userid:String, id: String) {
         try {
-            SiteManager.getKPI(id,kpiList)// return the list of KPIS from
+            mainApp.site_Manager.getKPI(id,kpiList)// return the list of KPIS from
             Timber.i("Detail getKPIs() Success : ${
                 kpiList.value.toString()}")
         }
@@ -39,8 +43,8 @@ class KPIViewModel : ViewModel() {
     fun delete(userid: String, id: String) {
         //ToDo: complete Delete
         try {
-            val site = SiteManager.find(id)
-            SiteManager.delete(site!!)
+            val site = mainApp.site_Manager.find(id)
+            mainApp.site_Manager.delete(site!!)
             // FirebaseDBManager.delete(userid,id)
             Timber.i("Site Delete Called")
         } catch (e: Exception) {
@@ -49,17 +53,16 @@ class KPIViewModel : ViewModel() {
     }
     //-----------------------------------------------------------------------------
     fun addKPI(userid: String, id: String,kpiData:SiteKPIModel) {
-        SiteManager.addKPI(userid,id,kpiData)
+        mainApp.site_Manager.addKPI(userid,id,kpiData)
         Timber.i("KPI Add Called")
     }
     //----------------------------------------------------------------------------
     fun updateSiteDescription(userid: String, id: String,newDescription :String) {
         try {
-            val site = SiteManager.find(id)
-
+            val site = mainApp.site_Manager.find(id)
             if (site != null) {
                 site.description = newDescription
-                SiteManager.update(site)
+                mainApp.site_Manager.update(site)
             }
             // FirebaseDBManager.delete(userid,id)
             Timber.i("Site update called")

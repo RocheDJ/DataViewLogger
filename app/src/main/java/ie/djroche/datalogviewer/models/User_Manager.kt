@@ -10,7 +10,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import ie.djroche.datalogviewer.utils.encryptString
 import ie.djroche.datalogviewer.utils.exists
-import ie.djroche.datalogviewer.utils.loadDummyUserJSONData
+import ie.djroche.datalogviewer.utils.loadDummyJSONData
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Type
@@ -43,7 +43,7 @@ class User_Manager(application: Application) : UserStore {
             // convert from firebase user to local type
             var localUser: UserModel = UserModel()
             localUser.email = firebaseAuth!!.currentUser?.email.toString()
-            localUser.id = firebaseAuth!!.currentUser?.uid
+            localUser.uid = firebaseAuth!!.currentUser?.uid
             localUser.firstName = firebaseAuth!!.currentUser?.displayName.toString()
             localUser.lastName = "Firebase"
             liveUser.postValue(localUser)
@@ -53,28 +53,26 @@ class User_Manager(application: Application) : UserStore {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(application.applicationContext)
         val xFirebase = preferences.getBoolean("FireBase", false)
+        isFirebase = xFirebase
 
         if (!xFirebase) {
+            //if user file does not exist create it
+            if (!exists(application.applicationContext, JSON_USERFILE)) {
+                loadDummyJSONData(application.applicationContext)
+            }
             deserialize()
         }
-        val id = preferences.getString("UserID",null)
-        if (id != null){
-            var localUser= findUserById(id)
+
+        val uid = preferences.getString("UserID",null)
+        if (uid != null){
+            var localUser= findUserById(uid)
             if (localUser != null){
                 liveUser.postValue(localUser!!)
                 loggedOut.postValue(false)
                 errorStatus.postValue(false)
             }
         }
-        if (xFirebase == false) {
-            //if user file does not exist create it
-            if (!exists(application.applicationContext, JSON_USERFILE)) {
-                loadDummyUserJSONData(application.applicationContext)
-            }
 
-        }
-
-        isFirebase = xFirebase
     }
 
     /*------------------------------------------------------------------------------------------------*/
@@ -86,7 +84,7 @@ class User_Manager(application: Application) : UserStore {
                     if (task.isSuccessful) {
                         var localUser: UserModel = UserModel()
                         localUser.email = firebaseAuth!!.currentUser?.email.toString()
-                        localUser.id = firebaseAuth!!.currentUser?.uid
+                        localUser.uid = firebaseAuth!!.currentUser?.uid
                         localUser.firstName = firebaseAuth!!.currentUser?.displayName.toString()
                         localUser.lastName = "Firebase"
                         liveUser.postValue(localUser)
@@ -122,7 +120,7 @@ class User_Manager(application: Application) : UserStore {
     override fun update(user: UserModel) {
 
         if (isFirebase != false) {
-            var foundUser: UserModel? = users.find { p -> p.id == user.id }
+            var foundUser: UserModel? = users.find { p -> p.uid == user.uid }
             if (foundUser != null) {
                 foundUser.email = user.email
                 foundUser.firstName = user.firstName
@@ -145,7 +143,8 @@ class User_Manager(application: Application) : UserStore {
         if (isFirebase) {
             return null
         } else {
-            return users.find { p -> p.id == userID }
+            val foundUser = users.find { p -> p.uid == userID }
+            return foundUser
         }
     }
 
@@ -173,7 +172,7 @@ class User_Manager(application: Application) : UserStore {
         } else {
             users.add(user)
             serialize()
-            return user.id!!
+            return user.uid!!
         }
     }
 
@@ -185,7 +184,7 @@ class User_Manager(application: Application) : UserStore {
                 firebaseAuth!!.createUserWithEmailAndPassword(email!!, password!!)
                     .addOnCompleteListener(application!!.mainExecutor, { task ->
                         if (task.isSuccessful) {
-                            newUser.id = firebaseAuth!!.currentUser?.uid
+                            newUser.uid = firebaseAuth!!.currentUser?.uid
                             newUser.email = firebaseAuth!!.currentUser?.email.toString()
                             newUser.firstName = firebaseAuth!!.currentUser?.displayName.toString()
                             liveUser.postValue(newUser)
@@ -234,8 +233,9 @@ class User_Manager(application: Application) : UserStore {
     /*-------------                      JSON Private Functions         -------------------------------*/
 
     private fun serialize() {
+        val  path = application?.applicationContext?.filesDir?.absolutePath
         val jsonString = gsonBuilder.toJson(users, listType)
-        File(JSON_USERFILE).writeText(jsonString)
+        File("$path/$JSON_USERFILE").writeText(jsonString)
     }
 
     private fun deserialize() {
@@ -268,7 +268,7 @@ class User_Manager(application: Application) : UserStore {
 
     fun SaveCurrentUser(user : UserModel){
         var editor = preferences.edit()
-        editor.putString("UserID", user.id.toString())
+        editor.putString("UserID", user.uid.toString())
         editor.commit()
         }
 

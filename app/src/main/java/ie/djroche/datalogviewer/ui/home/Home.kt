@@ -32,7 +32,7 @@ class Home : AppCompatActivity() {
     private lateinit var loggedInViewModel: LoggedInViewModel
 
     // site view model to enable showing selected site on nav drawer
-    private lateinit var siteViewModel: SiteViewModel
+    lateinit var siteViewModel: SiteViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
