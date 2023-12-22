@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -14,16 +13,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.PreferenceManager
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.auth.Login
 import ie.djroche.datalogviewer.databinding.HomeBinding
 import ie.djroche.datalogviewer.databinding.NavHeaderBinding
-import ie.djroche.datalogviewer.main.MainApp
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
-
 import ie.djroche.datalogviewer.ui.site.SiteViewModel
 import timber.log.Timber
 
@@ -35,11 +31,9 @@ class Home : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var loggedInViewModel: LoggedInViewModel
 
-    // site view model to enable shwing selected site on nav drawer
+    // site view model to enable showing selected site on nav drawer
     private lateinit var siteViewModel: SiteViewModel
 
-    //ToDo: Delete the reference to app when finished
-    lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +61,6 @@ class Home : AppCompatActivity() {
         val navView = homeBinding.navView
         navView.setupWithNavController(navController)
 
-        //ToDo: Delete the reference to app when finished
-        //launch the main app
-        app = application as MainApp
 
         Timber.i("Home Activity created...")
     }
@@ -77,20 +68,18 @@ class Home : AppCompatActivity() {
     /* ----------------------------------------------------------------------------------------------- */
     public override fun onStart() {
         super.onStart()
-        // updateNavHeader(app.user)
-
         loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
 
         siteViewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
-        // if the logged in user changes update the nave headder
+        // if the logged in user changes update the nave header
         loggedInViewModel.liveUser.observe(this, Observer { liveUser ->
             if (liveUser != null)
                 updateNavHeader(loggedInViewModel.liveUser.value!!)
         })
 
         // if the live data changes to logged out then open the login dialogue
-        loggedInViewModel.loggedOut.observe(this, Observer { loggedout ->
-            if (loggedout) {
+        loggedInViewModel.loggedOut.observe(this, Observer { userLoggedOut ->
+            if (userLoggedOut) {
                 startActivity(Intent(this, Login::class.java))
             }
         })
@@ -108,7 +97,7 @@ class Home : AppCompatActivity() {
         super.onRestart()
 
         siteViewModel = ViewModelProvider(this).get(SiteViewModel::class.java)
-        // if the selecteed site changes the update the nav drawer
+        // if the selected site changes the update the nav drawer
         siteViewModel.observableSite.observe(this, Observer { liveSite ->
             if (liveSite != null)
                 updateNavHeader_Site(siteViewModel.liveSite.value!!)
@@ -118,7 +107,7 @@ class Home : AppCompatActivity() {
 
     /* ----------------------------------------------------------------------------------------------- */
     private fun updateNavHeader(currentUser: UserModel) {
-        var headerView = homeBinding.navView.getHeaderView(0)
+        val headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
         navHeaderBinding.tvUser.text = currentUser.email
 
@@ -126,7 +115,7 @@ class Home : AppCompatActivity() {
 
     /* ----------------------------------------------------------------------------------------------- */
     private fun updateNavHeader_Site(currentSite: SiteModel) {
-        var headerView = homeBinding.navView.getHeaderView(0)
+        val headerView = homeBinding.navView.getHeaderView(0)
         navHeaderBinding = NavHeaderBinding.bind(headerView)
         navHeaderBinding.tvSite.text = currentSite.description
     }
@@ -138,7 +127,6 @@ class Home : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
-
 
 
     //-------------------- signOut called from nav_drawer_menu.xml

@@ -3,6 +3,7 @@ package ie.djroche.datalogviewer.ui.site
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+
 import ie.djroche.datalogviewer.models.SiteManager
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.models.UserModel
@@ -19,12 +20,14 @@ class SiteViewModel : ViewModel() {
         get() = siteList
 
     private var _site =
-        MutableLiveData<SiteModel?>()
+        MutableLiveData<SiteModel>()
 
     var liveSite = MutableLiveData<SiteModel?>()
 
-    val observableSite: MutableLiveData<SiteModel?>
+    val observableSite: MutableLiveData<SiteModel>
         get() = _site
+
+    var currentLiveUser = MutableLiveData<UserModel>()
 
     //-----------------------------------------------------------------------------
     init {
@@ -33,25 +36,26 @@ class SiteViewModel : ViewModel() {
     //-----------------------------------------------------------------------------
     fun load() {
         try {
-            SiteManager.findAll(siteList)
+           //SiteManager.findAll(siteList)
+            SiteManager.findAllForUser(currentLiveUser.value?.id!!,siteList)
             //FirebaseDBManager.findAll(liveFirebaseUser.value?.uid!!, donationsList)
             Timber.i("Report Load Success : ${siteList.value.toString()}")
         } catch (e: Exception) {
-            Timber.i("Report Load Error : $e.message")
+            Timber.e("Report Load Error : $e.message")
         }
     }
     //-----------------------------------------------------------------------------
     fun findByQR(userid: String, id: String){
         try {
-
             val mySite = SiteManager.findByQR(id)
-            if (mySite!=null){
+            if (mySite != null){
                 liveSite.postValue(mySite)
-                _site.value=mySite
+                //_site.value= mySite!!
+                _site.postValue(mySite!!)
             }
             Timber.i("Site findByQR Called")
         } catch (e: Exception) {
-            Timber.i("Site findByQR Error : $e.message")
+            Timber.e("Site findByQR Error : $e.message")
         }
     }
     //-----------------------------------------------------------------------------
@@ -72,7 +76,7 @@ class SiteViewModel : ViewModel() {
 
             Timber.i("Site Add Called")
         } catch (e: Exception) {
-            Timber.i("Site Add Error : $e.message")
+            Timber.e("Site Add Error : $e.message")
         }
     }
     //-----------------------------------------------------------------------------

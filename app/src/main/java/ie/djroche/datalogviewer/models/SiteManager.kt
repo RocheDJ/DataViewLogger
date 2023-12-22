@@ -30,7 +30,7 @@ object SiteManager : SiteStore {
         siteList.value = sites
     }
 
-    override fun findAllForUser(userID: String): List<SiteModel> {
+    override fun findAllForUser(userID: String,siteList: MutableLiveData<List<SiteModel>>){
         deserialize()
         var foundSites = mutableListOf<SiteModel>()
         // manual search
@@ -39,7 +39,7 @@ object SiteManager : SiteStore {
                 foundSites.add(site)
             }
         }
-        return foundSites
+        siteList.value= foundSites
     }
 
     override fun find(siteID: String): SiteModel? {

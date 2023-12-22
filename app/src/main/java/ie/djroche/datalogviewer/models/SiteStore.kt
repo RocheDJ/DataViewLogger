@@ -8,7 +8,9 @@ interface SiteStore {
     fun findByQR(QRCode: String): SiteModel?
 
     fun update(site: SiteModel)
-    fun findAllForUser(userID:String): List<SiteModel>
+    fun findAllForUser(userID:String,
+                       siteList:
+                       MutableLiveData<List<SiteModel>>)
     fun find(siteID: String): SiteModel?
 
     fun create(site: SiteModel):String

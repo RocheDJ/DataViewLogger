@@ -4,12 +4,10 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -17,54 +15,55 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ie.djroche.datalogviewer.R
+import ie.djroche.datalogviewer.activities.QRScanActivity
 import ie.djroche.datalogviewer.adaptors.SiteAdaptor
 import ie.djroche.datalogviewer.adaptors.SiteClickListener
+import ie.djroche.datalogviewer.adaptors.SiteItemDecoration
+import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.databinding.FragmentSiteBinding
+import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.SiteModel
 import ie.djroche.datalogviewer.utils.SwipeToDeleteCallback
 import ie.djroche.datalogviewer.utils.createLoader
 import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
 import timber.log.Timber
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import ie.djroche.datalogviewer.R
-import ie.djroche.datalogviewer.activities.QRScanActivity
-import ie.djroche.datalogviewer.auth.LoggedInViewModel
-import ie.djroche.datalogviewer.models.SiteKPIModel
 import java.util.Locale
-import ie.djroche.datalogviewer.adaptors.SiteItemDecoration
-import ie.djroche.datalogviewer.databinding.CardSiteBinding
 
 class SiteFragment : Fragment(), SiteClickListener {
     private var _fragBinding: FragmentSiteBinding? = null
     private val fragBinding get() = _fragBinding!!
-    private val siteViewModel : SiteViewModel by activityViewModels()
-    lateinit var loader : AlertDialog
-    lateinit var loggedInViewModel : LoggedInViewModel
-    lateinit var selectedSiteCard : CardSiteBinding
+    private val siteViewModel: SiteViewModel by activityViewModels()
+    private val loggedInViewModel: LoggedInViewModel by activityViewModels()
+    lateinit var loader: AlertDialog
+    private var allowQrSelect: Boolean = false // toggle to stop navigation to kpi fragment twice
+    // from live data
 
-    // register for QR Scan result
-    // https://stackoverflow.com/questions/14785806/android-how-to-make-an-activity-return-results-to-the-activity-which-calls-it
+
+    // -------------------------------- Register Activity for QR Scan -----------------------------
     private val intentLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val scannedQR =  result.data?.getStringExtra("scannedQR")
+                val scannedQR = result.data?.getStringExtra("scannedQR")
                 if (scannedQR != null) {
                     processQRScan(scannedQR)
                 }
                 Timber.i("QR Observer registerForActivityResult = $scannedQR")
             }
         }
-//-----------------------------------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------------------------------
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,34 +71,42 @@ class SiteFragment : Fragment(), SiteClickListener {
         _fragBinding = FragmentSiteBinding.inflate(inflater, container, false)
         val root = fragBinding.root
         setupMenu()
+        //Loading Dialogue
         loader = createLoader(requireActivity())
         // decoration for highlighting selected site
-        fragBinding.recyclerView.addItemDecoration( SiteItemDecoration(fragBinding.root.context))
+        fragBinding.recyclerView.addItemDecoration(SiteItemDecoration(fragBinding.root.context))
         fragBinding.recyclerView.layoutManager = LinearLayoutManager(activity)
 
+        //download list of sites on user change
+        showLoader(loader, "Downloading Sites")
+        loggedInViewModel.liveUser.observe(viewLifecycleOwner, Observer { myLiveUser ->
+            if (myLiveUser != null) {
+                siteViewModel.currentLiveUser.value = myLiveUser
+                siteViewModel.load()
+            }
+        })
 
         //  the site List info
-        showLoader(loader,"Downloading Sites")
-        siteViewModel.observableSiteList.observe(viewLifecycleOwner, Observer {
-                sites ->
+        showLoader(loader, "Downloading Sites")
+        loggedInViewModel.liveUser.value = loggedInViewModel.liveUser.value
+        siteViewModel.observableSiteList.observe(viewLifecycleOwner, Observer { sites ->
             sites?.let {
                 render(sites as ArrayList<SiteModel>)
                 hideLoader(loader)
                 checkSwipeRefresh()
             }
         })
-
         setSwipeRefresh()
-
 
         // swipe to delete
         val swipeDeleteHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                showLoader(loader,"Deleting Site")
+                showLoader(loader, "Deleting Site")
                 val adapter = fragBinding.recyclerView.adapter as SiteAdaptor
                 adapter.removeAt(viewHolder.adapterPosition)
                 siteViewModel.delete(
-                    "123",(viewHolder.itemView.tag as SiteModel).id)
+                    "123", (viewHolder.itemView.tag as SiteModel).id
+                )
                 hideLoader(loader)
             }
         }
@@ -117,26 +124,37 @@ class SiteFragment : Fragment(), SiteClickListener {
             Timber.i("Add Site Clicked")
             addNewSite()
         }
-        // link to the logged in view model
-        loggedInViewModel = ViewModelProvider(this).get(LoggedInViewModel::class.java)
+
+        // listen for data change on site
+        siteViewModel.observableSite.observe(viewLifecycleOwner,
+            Observer<SiteModel?> { site ->
+                if (site != null) {
+                    // do once the easy way
+                    if (allowQrSelect) {
+                        allowQrSelect = false
+                        selectSite(site)
+                    }
+                }
+
+            })
         return root
     }
-    /*------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------*/
 
-    private fun addNewSite()
-    {
+    private fun addNewSite() {
         val myNewSite: SiteModel = SiteModel(data = mutableListOf<SiteKPIModel>())
-        myNewSite.description= "New Site"
+        myNewSite.description = "New Site"
         myNewSite.userid = loggedInViewModel.liveUser.value!!.id.toString()
         myNewSite.data.add(SiteKPIModel())
         siteViewModel.addSite(myNewSite.copy())
 
         fragBinding.swiperefresh.isRefreshing = true
-        showLoader(loader,"Downloading Site List")
+        showLoader(loader, "Downloading Site List")
         siteViewModel.load()
 
     }
-    /*------------------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------*/
     private fun setupMenu() {
         setHasOptionsMenu(true)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
@@ -168,33 +186,36 @@ class SiteFragment : Fragment(), SiteClickListener {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if(menuItem.itemId == R.id.item_Search){
+                if (menuItem.itemId == R.id.item_Search) {
                     Timber.i("Search clicked ")
                     return true
                 }
                 return NavigationUI.onNavDestinationSelected(
-                    menuItem, requireView().findNavController())
+                    menuItem, requireView().findNavController()
+                )
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
-    /*------------------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------*/
     fun setSwipeRefresh() {
         fragBinding.swiperefresh.setOnRefreshListener {
             fragBinding.swiperefresh.isRefreshing = true
-            showLoader(loader,"Downloading Site List")
+            showLoader(loader, "Downloading Site List")
             siteViewModel.load()
         }
     }
-/*------------------------------------------------------------------------------------------------*/
+
+    /*-------------------------------------------------------------------------------------------*/
     fun checkSwipeRefresh() {
-    if (fragBinding.swiperefresh.isRefreshing)
-        fragBinding.swiperefresh.isRefreshing = false
+        if (fragBinding.swiperefresh.isRefreshing)
+            fragBinding.swiperefresh.isRefreshing = false
     }
 
-    /* ------------------------------------------------------------------------------------------ */
+    /* ----------------------------------------------------------------------------------------- */
     private fun render(siteList: ArrayList<SiteModel>) {
 
-        fragBinding.recyclerView.adapter = SiteAdaptor(siteList,this)
+        fragBinding.recyclerView.adapter = SiteAdaptor(siteList, this)
 
         if (siteList.isEmpty()) {
             fragBinding.recyclerView.visibility = View.GONE
@@ -205,52 +226,65 @@ class SiteFragment : Fragment(), SiteClickListener {
 
             // if a site is selected highlight it in the list
             val adapter = fragBinding.recyclerView.adapter as SiteAdaptor
-            if (siteViewModel.liveSite.value != null){
-                adapter.highlightSite(siteViewModel.liveSite.value!!,this.requireView())
+            if (siteViewModel.liveSite.value != null) {
+                adapter.highlightSite(siteViewModel.liveSite.value!!, this.requireView())
             }
 
         }
-
     }
-    /* -------------------------------------------------------------------------------------------- */
+
+    /* ----------------------------------------------------------------------------------------- */
     override fun onDestroyView() {
         super.onDestroyView()
         _fragBinding = null
     }
 
-    /*---------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------*/
     override fun onSiteClick(site: SiteModel) {
         Timber.i("Site clicked " + site.description)
         // note for this to work need androidx.navigation.safeargs in both gradle files
-        siteViewModel.findByQR("1234",site.qrcode)
-        selectSite(site)
-
+        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.id.toString(), site.qrcode)
+        allowQrSelect = true
     }
 
 
-    /*---------------------------------------------------------------------------------------------*/
-    override fun  onResume(){
+    /*-------------------------------------------------------------------------------------------*/
+    override fun onResume() {
         super.onResume()
-
+        showLoader(loader, "Downloading Sites")
+        loggedInViewModel.liveUser.observe(viewLifecycleOwner, Observer { myLiveUser ->
+            if (myLiveUser != null) {
+                siteViewModel.currentLiveUser.value = myLiveUser
+                siteViewModel.load()
+            }
+        })
+        hideLoader(loader)
     }
-    /*---------------------------------------------------------------------------------------------*/
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    /*-------------------------------------------------------------------------------------------*/
     private fun showScanQR() {
         Timber.i("DataLogViewer Scan QR selected")
-        intentLauncher.launch(Intent(this.context,  QRScanActivity::class.java))
+        intentLauncher.launch(Intent(this.context, QRScanActivity::class.java))
     }
-    /*---------------------------------------------------------------------------------------------*/
-    private fun processQRScan(qrCode:String){
-        siteViewModel.findByQR("1234",qrCode)
+
+    /*-------------------------------------------------------------------------------------------*/
+    private fun processQRScan(qrCode: String) {
+        siteViewModel.findByQR(loggedInViewModel.liveUser.value!!.id.toString(), qrCode)
+        allowQrSelect = true
     }
-    /*---------------------------------------------------------------------------------------------*/
-    private fun selectSite(site: SiteModel){
 
-
-        val action =  SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,site.description)
+    /*-------------------------------------------------------------------------------------------*/
+    private fun selectSite(site: SiteModel) {
+        val action =
+            SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id, site.description)
         findNavController().navigate(action)
     }
 
-    /*--------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------*/
     private fun filter(text: String) {
         // creating a new array list to filter our data.
         val filteredList: ArrayList<SiteModel> = ArrayList()

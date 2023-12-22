@@ -36,8 +36,7 @@ class QRScanActivity : AppCompatActivity() {
     private lateinit var barcodeDetector: BarcodeDetector
     private var scannedValue = ""
     private lateinit var binding: ActivityQrscanBinding
-    lateinit var app: MainApp
-    private val siteViewModel: SiteViewModel by viewModels()
+
     val data = Intent()
 
     //--------------------------------------------------------------------------------------------------
@@ -52,8 +51,7 @@ class QRScanActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        // reference to main app
-        app = application as MainApp
+
 
         // ask for permission to use Camera
         if (ContextCompat.checkSelfPermission(

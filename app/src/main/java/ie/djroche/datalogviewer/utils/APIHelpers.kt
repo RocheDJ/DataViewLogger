@@ -1,6 +1,9 @@
 package ie.djroche.datalogviewer.utils
 
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
@@ -19,9 +22,13 @@ import timber.log.Timber
 var testReply : String  =""
 val testTAG = "TestRequestTag"
 val readQRTag ="QRRequestTag"
+
+lateinit var httpQueue : RequestQueue // queue of HTTP requests
 fun sendTestRequest(app: MainApp){
 // Request a string response from the provided URL.
-    val testURL = app.preferences.getString("TestEndPoint","https://www.google.com")
+    var preferences: SharedPreferences
+    preferences = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
+    val testURL =preferences.getString("TestEndPoint","https://www.google.com")
     val stringRequest = StringRequest(
         Request.Method.GET, testURL,
         Response.Listener<String> { response ->
@@ -34,12 +41,14 @@ fun sendTestRequest(app: MainApp){
 
     stringRequest.tag=testTAG
 
-  app.httpQueue.add(stringRequest)   // add to the app queue
+   httpQueue.add(stringRequest)   // add to the app queue
 }
 
 fun  sendReadQRDataRequest(app: MainApp,QRcode :String){
 // Request a string response from the provided URL.
-    var url = app.preferences.getString("Endpoint","http://127.0.0.1")
+    var preferences: SharedPreferences
+    preferences = PreferenceManager.getDefaultSharedPreferences(app.applicationContext)
+    var url = preferences.getString("Endpoint","http://127.0.0.1")
     url = url + "/read/id"
     val request: StringRequest =
         object : StringRequest(Request.Method.POST, url, object : Response.Listener<String?> {
@@ -64,7 +73,7 @@ fun  sendReadQRDataRequest(app: MainApp,QRcode :String){
         }
 
     request.tag=readQRTag
-    app.httpQueue.add(request)   // add to the app queue
+    httpQueue.add(request)   // add to the app queue
 
 }
 //--------------------------------------------------------------------------------------------------
@@ -100,8 +109,8 @@ fun processGetSiteByQRResponse(response: String?){
 
 
 fun cancelRequests(app: MainApp){
-    app.httpQueue?.cancelAll(testTAG)
-    app.httpQueue?.cancelAll(readQRTag)
+    httpQueue?.cancelAll(testTAG)
+    httpQueue?.cancelAll(readQRTag)
 }
 
 

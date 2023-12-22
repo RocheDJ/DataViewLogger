@@ -7,12 +7,12 @@ import ie.djroche.datalogviewer.models.UserModel
 import ie.djroche.datalogviewer.models.User_Manager
 
 class LoggedInViewModel(app: Application) : AndroidViewModel(app) {
+
     var user_Manager : User_Manager = User_Manager(app)
-    var liveUser: MutableLiveData<UserModel?> = user_Manager.liveUser
+    var liveUser: MutableLiveData<UserModel> = user_Manager.liveUser
     var loggedOut: MutableLiveData<Boolean> = user_Manager.loggedOut
 
     fun logOut() {
-       // UserManager.logOut()
         user_Manager.logOut()
     }
 }

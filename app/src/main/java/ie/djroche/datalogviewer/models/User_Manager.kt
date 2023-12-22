@@ -28,7 +28,7 @@ class User_Manager(application: Application) : UserStore {
     private var application: Application? = null
     var firebaseAuth: FirebaseAuth? = null
 
-    var liveUser = MutableLiveData<UserModel?>()
+    var liveUser = MutableLiveData<UserModel>()
     var loggedOut = MutableLiveData<Boolean>()
     var errorStatus = MutableLiveData<Boolean>()
 
@@ -53,12 +53,25 @@ class User_Manager(application: Application) : UserStore {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(application.applicationContext)
         val xFirebase = preferences.getBoolean("FireBase", false)
+
+        if (!xFirebase) {
+            deserialize()
+        }
+        val id = preferences.getString("UserID",null)
+        if (id != null){
+            var localUser= findUserById(id)
+            if (localUser != null){
+                liveUser.postValue(localUser!!)
+                loggedOut.postValue(false)
+                errorStatus.postValue(false)
+            }
+        }
         if (xFirebase == false) {
             //if user file does not exist create it
             if (!exists(application.applicationContext, JSON_USERFILE)) {
                 loadDummyUserJSONData(application.applicationContext)
             }
-            deserialize()
+
         }
 
         isFirebase = xFirebase
@@ -78,6 +91,7 @@ class User_Manager(application: Application) : UserStore {
                         localUser.lastName = "Firebase"
                         liveUser.postValue(localUser)
                         errorStatus.postValue(false)
+
                         retVal = true
                     } else {
                         Timber.i("Login Failure: $task.exception!!.message")
@@ -92,6 +106,8 @@ class User_Manager(application: Application) : UserStore {
                 if (ValidateUser(checkUser!!, password!!) ==0){
                     liveUser.postValue(checkUser!!)
                     loggedOut.postValue(false)
+
+                    SaveCurrentUser(checkUser)
                     retVal = true
                 }else{
                     loggedOut.postValue(true)
@@ -204,9 +220,15 @@ class User_Manager(application: Application) : UserStore {
 
     /*------------------------------------------------------------------------------------------------*/
     override fun logOut() {
-        firebaseAuth!!.signOut()
+        if (isFirebase){
+            firebaseAuth!!.signOut()
+        }else
+        {
+            SavelogoutUser()
+        }
         loggedOut.postValue(true)
         errorStatus.postValue(false)
+
     }
 
     /*-------------                      JSON Private Functions         -------------------------------*/
@@ -243,4 +265,17 @@ class User_Manager(application: Application) : UserStore {
         return iReturn
     }
 
+
+    fun SaveCurrentUser(user : UserModel){
+        var editor = preferences.edit()
+        editor.putString("UserID", user.id.toString())
+        editor.commit()
+        }
+
+    fun SavelogoutUser(){
+
+            var editor = preferences.edit()
+            editor.remove("UserID")
+            editor.commit()
+    }
 }

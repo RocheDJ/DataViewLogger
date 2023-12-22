@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
-
 import ie.djroche.datalogviewer.R
 import ie.djroche.datalogviewer.databinding.LoginBinding
 import ie.djroche.datalogviewer.ui.home.Home
@@ -42,11 +41,11 @@ class Login : AppCompatActivity() {
         { liveUser -> if (liveUser != null)
             startActivity(Intent(this, Home::class.java)) })
 
-        /*
-        loginRegisterViewModel.loggedOut.observe(this, Observer
-        { loggedOut -> if (loggedOut==false)
-           startActivity(Intent(this, Home::class.java))})
-        */
+
+        loginRegisterViewModel.user_Manager.errorStatus.observe(this, Observer
+        {
+                status -> checkStatus(status)
+        })
     }
 
     //Required to exit app from Login Screen - must investigate this further
