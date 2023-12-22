@@ -32,7 +32,7 @@ import ie.djroche.datalogviewer.auth.LoggedInViewModel
 import ie.djroche.datalogviewer.databinding.FragmentKPIBinding
 import ie.djroche.datalogviewer.models.SiteKPIModel
 import ie.djroche.datalogviewer.models.listKpiType
-import ie.djroche.datalogviewer.ui.site.SiteViewModel
+
 import ie.djroche.datalogviewer.utils.createLoader
 import ie.djroche.datalogviewer.utils.hideLoader
 import ie.djroche.datalogviewer.utils.showLoader
@@ -79,7 +79,7 @@ class KPIFragment : Fragment(), KPIGridClickListener {
         // Update Button to update site description
         fragBinding.updateSiteButton.setOnClickListener {
             kpiViewModel.updateSiteDescription(loggedInViewModel.liveUser.value!!.uid.toString()
-                                                ,args.siteID,
+                                                ,args.siteData,
                                                     fragBinding.siteDescriptionVM.toString())
 
             findNavController().navigateUp() // go back to site list
@@ -103,7 +103,7 @@ class KPIFragment : Fragment(), KPIGridClickListener {
         val kpiAdapter = KPIGridViewAdaptor(kpiList, this.requireContext().applicationContext, this)
         fragBinding.gridView.adapter =
             kpiAdapter //KPIGridViewAdaptor(kpiList,fragBinding.root.context,this)
-        fragBinding.editSiteName.setText("---") // give the edit text an initial value
+       // fragBinding.editSiteName.setText("---") // give the edit text an initial value
 
         if (kpiList.isEmpty()) {
             fragBinding.gridView.visibility = View.GONE
@@ -112,7 +112,7 @@ class KPIFragment : Fragment(), KPIGridClickListener {
             fragBinding.gridView.visibility = View.VISIBLE
             fragBinding.kpisNotFound.visibility = View.GONE
         }
-        fragBinding.siteDescriptionVM = kpiViewModel.observableSiteDescription.value
+       // fragBinding.siteDescriptionVM = kpiViewModel.observableSiteDescription.value
     }
 
     // ------------------------- RENDER the Menu for fragment--------------------------------------
@@ -157,7 +157,9 @@ class KPIFragment : Fragment(), KPIGridClickListener {
                 .create()
             addKPIList = gsonBuilder.fromJson(kpiJSONString, listKpiType)
             for (kpi in addKPIList) {
-                kpiViewModel.addKPI(loggedInViewModel.liveUser.value!!.uid.toString(),  args.siteID,kpi)
+                kpiViewModel.addKPI(loggedInViewModel.liveUser.value!!.uid.toString(),
+                    args.siteData
+                    ,kpi)
             }
         } catch (e: Exception) {
             Timber.i("Add KPI Error " + e.message)

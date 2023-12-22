@@ -3,24 +3,30 @@ package ie.djroche.datalogviewer.models
 import androidx.lifecycle.MutableLiveData
 
 interface SiteStore {
-    fun findAll(siteList:
-                MutableLiveData<List<SiteModel>>)
+    fun findAll(userID: String,
+                siteList: MutableLiveData<List<SiteModel>>)
     fun findByQR(userID: String,
                  QRCode: String,
                  site  : MutableLiveData<SiteModel>)
 
-    fun update(site: SiteModel)
+    fun update(userID: String,
+               site: SiteModel)
 
     fun findAllForUser(userID:String,
                        siteList:
                        MutableLiveData<List<SiteModel>>)
-    fun find(siteID: String): SiteModel?
+    fun findById(userID:String,
+                 siteID: String,
+                 site  : MutableLiveData<SiteModel>)
 
-    fun create(site: SiteModel):String
+    fun create(user :MutableLiveData<UserModel>,
+               site: SiteModel):String
 
-    fun delete(site: SiteModel)
+    fun delete(userID:String,
+               site: SiteModel)
 
-    fun addKPI(userID:String,siteID:String, aKPI:SiteKPIModel)
+    fun addKPI(userID:String,site:SiteModel, aKPI:SiteKPIModel)
 
-    fun getKPI(siteID:String, siteKPIList:MutableLiveData<List<SiteKPIModel>>)
+    fun getKPI(userID:String,siteID:String, siteKPIList:MutableLiveData<List<SiteKPIModel>>)
+
 }

@@ -148,7 +148,7 @@ class SiteFragment : Fragment(), SiteClickListener {
         myNewSite.description = "New Site"
         myNewSite.userid = loggedInViewModel.liveUser.value!!.uid.toString()
         myNewSite.data.add(SiteKPIModel())
-        siteViewModel.addSite(myNewSite.copy())
+        siteViewModel.addSite(loggedInViewModel.liveUser,myNewSite.copy())
         fragBinding.swiperefresh.isRefreshing = true
         showLoader(loader, "Downloading Site List")
         siteViewModel.load()
@@ -282,7 +282,9 @@ class SiteFragment : Fragment(), SiteClickListener {
     /*-------------------------------------------------------------------------------------------*/
     private fun selectSite(site: SiteModel) {
         val action =
-            SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id, site.description)
+            SiteFragmentDirections.actionSiteFragmentToKPIFragment(site.id,
+                site.description,
+                site)
         findNavController().navigate(action)
     }
 

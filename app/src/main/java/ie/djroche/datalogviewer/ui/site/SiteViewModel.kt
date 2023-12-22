@@ -42,9 +42,9 @@ class SiteViewModel (app: Application) : AndroidViewModel(app) {
            //SiteManager.findAll(siteList)
             mainApp.site_Manager.findAllForUser(currentLiveUser.value?.uid!!,siteList)
             //FirebaseDBManager.findAll(liveFirebaseUser.value?.uid!!, donationsList)
-            Timber.i("Report Load Success : ${siteList.value.toString()}")
+            Timber.i("SiteViewModel Load Success : ${siteList.value.toString()}")
         } catch (e: Exception) {
-            Timber.e("Report Load Error : $e.message")
+            Timber.e("SiteViewModel Load Error : $e.message")
         }
     }
     //-----------------------------------------------------------------------------
@@ -62,8 +62,11 @@ class SiteViewModel (app: Application) : AndroidViewModel(app) {
     //-----------------------------------------------------------------------------
     fun delete(userid: String, id: String) {
         try {
-            val site =  mainApp.site_Manager.find(id)
-            mainApp.site_Manager.delete(site!!)
+            val site = MutableLiveData<SiteModel>()
+            mainApp.site_Manager.findById(userid,id,site)
+            site.value?.let {
+                mainApp.site_Manager.delete(userid, it)
+            }
             // FirebaseDBManager.delete(userid,id)
             Timber.i("Site Delete Called")
         } catch (e: Exception) {
@@ -71,9 +74,10 @@ class SiteViewModel (app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun addSite( site: SiteModel) {
+    fun addSite(user:MutableLiveData<UserModel>,
+                site: SiteModel) {
         try {
-            mainApp.site_Manager.create(site)
+            mainApp.site_Manager.create(user,site)
 
             Timber.i("Site Add Called")
         } catch (e: Exception) {

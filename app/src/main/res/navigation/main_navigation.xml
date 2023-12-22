@@ -58,6 +58,8 @@
             app:argType="string" />
         <argument android:name="siteDescription"
             app:argType="string" />
+        <argument android:name="siteData"
+            app:argType="ie.djroche.datalogviewer.models.SiteModel" />
     </fragment>
     <activity
         android:id="@+id/login"
